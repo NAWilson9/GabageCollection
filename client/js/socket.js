@@ -18,12 +18,12 @@ function leaveRoom(){
 
 //Pushes current client info to the server
 function updateStatus(data){
-    socket.emit('updateStatus', data);
+    socket.emit('updatePlayerStatus', data);
 }
 
 //Event listeners
 
 //Receives updated client info from the server
-socket.on('/updateStatus', function(data){
+socket.on('updateGlobalStatus', function(data){
     console.log('New status: ' + data);
 });

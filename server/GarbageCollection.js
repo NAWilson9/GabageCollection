@@ -70,35 +70,29 @@ var initializeServer = function(functions, startServer) {
 
 
 //Socket routes
-io.on('connection', function (socket) {
-    var room;
+io.on('connection', function(socket) {
     console.log(new Date().toLocaleTimeString() + ' | A user has connected. IP Address: ' + socket.handshake.address +  ' Total users: ' + io.engine.clientsCount);
-    //On connect, send client current info
 
-    /*
-     ** Client Requests
-     */
-    socket.on('/buttonPressed', function(data){
-        console.log('Button pressed: ' + data);
-        socket.to(room).emit('/buttonPressedd', 'aaaa');
-    });
-
-    socket.on('/joinRoom', function(data){
+    var room;
+    socket.on('joinRoom', function(data){
+        socket.leave(room);
         room = data;
         socket.join(room);
-        console.log('Join: ' + JSON.stringify(socket.rooms));
+        console.log('A socket joined room: ' + room);
     });
 
-    socket.on('/leaveRoom', function(data){
+    socket.on('leaveRoom', function(){
         socket.leave(room);
-        room = '';
-        console.log('Leave: ' + JSON.stringify(socket.rooms));
+        console.log('A socket left room: ' + room);
+    });
+
+    socket.on('updatePlayerStatus', function(data){
+        console.log('Button pressed: ' + data);
+        socket.to(room).emit('updateGlobalStatus', 'aaaa');
     });
 
     //A user has disconnected
-    socket.on('disconnect', function (data) {
+    socket.on('disconnect', function() {
         console.log(new Date().toLocaleTimeString() + ' | A user has disconnected. Total users: ' + io.engine.clientsCount);
     });
-
-    //Socket functions
 });
