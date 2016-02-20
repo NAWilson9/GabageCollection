@@ -86,9 +86,9 @@ io.on('connection', function(socket) {
         console.log('A socket left room: ' + room);
     });
 
-    socket.on('updateStatus', function(data){
+    socket.on('updatePlayerStatus', function(data){
         console.log('Button pressed: ' + data);
-        socket.to(room).emit('updateStatus', 'aaaa');
+        socket.to(room).emit('updateGlobalStatus', 'aaaa');
     });
 
     //A user has disconnected
