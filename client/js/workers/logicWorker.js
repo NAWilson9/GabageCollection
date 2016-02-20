@@ -8,7 +8,7 @@ importScripts(
 );
 var TIMER = 'timer';
 metrics.createTimer(TIMER);
-var socket = io.connect('localhost:1337');
+var socket = io.connect('noobnoob.no-ip.org:1337');
 
 socket.on('/buttonPressedd', function(data){
     console.log('GG: ' + data);
@@ -71,6 +71,7 @@ self.onmessage = function(e) {
 
 var ship = {
     pt: new Point(50, 50),
+    v: new Vector(0, 0),
     dir: new Vector(0, 0)
 };
 var camera = new Point(0, 0);
@@ -85,14 +86,17 @@ var trash = [];// literally
 
 var loop = function(){
 	metrics.markTimer(TIMER);
-	var speed = 4;
-	var deltaT = metrics.getDeltaTime(TIMER)/1000*speed;
+	var deltaT = metrics.getDeltaTime(TIMER)/1000;
 
     if(gamepad){
         const left = gamepad.leftStick,
             right = gamepad.rightStick;
-        ship.pt.x += Math.round(Math.cos(left.angle)*left.distance*5);
-        ship.pt.y += Math.round(Math.sin(left.angle)*left.distance*5);
+        ship.v.w += Math.round(Math.cos(left.angle)*left.distance*deltaT*100);
+        ship.v.h += Math.round(Math.sin(left.angle)*left.distance*deltaT*100);
+        ship.v.w *= .9;
+        ship.v.h *= .9;
+        ship.pt.x += ship.v.w;
+        ship.pt.y += ship.v.h;
         ship.dir.w = Math.round(Math.cos(right.angle)*right.distance*20);
         ship.dir.h = Math.round(Math.sin(right.angle)*right.distance*20);
 

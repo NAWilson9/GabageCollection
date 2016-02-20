@@ -70,8 +70,6 @@ function bakeRendering(one, loadingCallback){
         for(var j=0;j<stars;j++) {
             var r = rand(150, 250),
                 num = rand(4, 12) * 2,
-                theta = 0,
-                dt = 360 / num,
                 x = rand(0, size),
                 y = rand(0, size),
                 rad1 = rand(3, 8) * (10 - i*3),
@@ -105,8 +103,8 @@ var unsubscribeFromLogic;
 
 
 function init(){
-    var w = 500;
-    var h = 500;
+    var w = 800;
+    var h = 600;
 
     var loader = get('canvasLoader');
     initCanvas(loader, CONSTANTS.BACKGROUND, w, h);
