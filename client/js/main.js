@@ -66,13 +66,13 @@ function bakeRendering(one, loadingCallback){
     var size = 5e3;
     ImageBaker.initialize(size, size);
     ImageBaker.bakeImage('starfield' + i, function (ctx) {
-        var stars = rand(size*size/1e5 | 0, size*size/4e4 | 0);
+        var stars = rand(size*size/8e4 | 0, size*size/2e4 | 0);
         for(var j=0;j<stars;j++) {
             var r = rand(150, 250),
                 num = rand(4, 12) * 2,
                 x = rand(0, size),
                 y = rand(0, size),
-                rad1 = rand(3, 8) * (10 - i*3),
+                rad1 = (rand(3, 8) * (10 - i*3))/4,
                 rad2 = rand(rad1 *.2, rad1 *.8);
 
             ctx.fillStyle = 'rgba(' +

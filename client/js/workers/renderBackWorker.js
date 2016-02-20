@@ -25,8 +25,6 @@ function handleLogic(e){
     pkg.add('translate', -message.camera.x/k, -message.camera.y/k);
     pkg.add('drawBakedImage', 'starfield0', 0, 0);
 
-    //pkg.add('translate', message.camera.x/k, message.camera.y/k);
-    //pkg.add('translate', message.camera.x/k, message.camera.y/k);
     pkg.add('translate', message.camera.x-width/2, message.camera.y-height/2);
 
 

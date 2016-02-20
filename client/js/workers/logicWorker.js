@@ -87,8 +87,8 @@ function loop(){
     if(gamepad){
         const left = gamepad.leftStick,
             right = gamepad.rightStick;
-        ship.v.w += Math.cos(left.angle)*left.distance*2;//deltaT*100);
-        ship.v.h += Math.sin(left.angle)*left.distance*2;//deltaT*100);
+        ship.v.w += Math.round(Math.cos(left.angle)*left.distance*left.distance*2);
+        ship.v.h += Math.round(Math.sin(left.angle)*left.distance*left.distance*2);
         var factor = .85;//Math.pow(.9, 1+deltaT/100);
         ship.v.w *= factor;
         ship.v.h *= factor;
