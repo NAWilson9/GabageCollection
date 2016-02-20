@@ -11,7 +11,8 @@ metrics.createTimer(TIMER);
 var gamepad = null;
 
 var width,
-    height;
+    height,
+    socketInfo;
 
 function handleKeys(data) {
     data.forEach(function (o) {
@@ -28,11 +29,12 @@ function handleGamepad(data){
 self.onmessage = function(e) {
     width = e.data.width;
     height = e.data.height;
+    socketInfo = e.data.socketInfo;
 
     self.onmessage = function (e) {
 
         var arr = e.data;
-        var msg = ab2str(arr);
+        var msg = ab2str(arr);// TODO decode
         var obj = JSON.parse(msg);
 
         var action;
@@ -73,7 +75,6 @@ function loop(){
 	metrics.markTimer(TIMER);
 	var speed = 4;
 	var deltaT = metrics.getDeltaTime(TIMER)/1000*speed;
-
 
     if(gamepad){
         const left = gamepad.leftStick,

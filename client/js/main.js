@@ -158,7 +158,8 @@ function initLogicWorker(w, h){
     // send initial values
     worker.postMessage({
         'width':w,
-        'height':h
+        'height':h,
+        'socketInfo': window.location.origin
     });
 
     var subscribers = [];
@@ -175,7 +176,7 @@ function initLogicWorker(w, h){
         });
     };
     sendLogicWorkerMessage = function(obj){
-        var str = JSON.stringify(obj);
+        var str = JSON.stringify(obj);// TODO fix
         var arr = str2ab(str);
         worker.postMessage(arr);
     };
