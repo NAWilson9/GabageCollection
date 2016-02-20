@@ -71,7 +71,10 @@ self.onmessage = function(e) {
 var ship = {
     pt: new Point(50, 50),
     v: new Vector(0, 0),
-    dir: new Vector(0, 0)
+    dir: new Vector(0, 0),
+    name: 'alain',
+    color: 'rgb(255,150,190)',
+    trash: 0
 };
 var camera = new Point(0, 0);
 function handleCamera(){
@@ -89,7 +92,6 @@ function DebugSpawnTrash() {
         rand(boardSize / k, boardSize * (k - 1) / k),
         rand(boardSize / k, boardSize * (k - 1) / k)
     ));
-    console.log(boardSize);
     setTimeout(DebugSpawnTrash, rand(5, 10) * 1000);
 }
 
@@ -122,8 +124,20 @@ function loop(){
     }
     handleCamera();
 
+
     // check collisions
-    // TODO
+    var collisionRadius = 20;
+    for(var i=0;i<trash.length;i++){
+        var t = trash[i];
+        var dx = t.x - ship.pt.x;
+        var dy = t.y - ship.pt.y;
+        var dist = Math.sqrt(dx*dx+dy*dy);
+        if(dist < collisionRadius){
+            trash.splice(i,1);
+            i--;
+            ship.trash++;
+        }
+    }
 
 	var message = {
         'ship': ship,

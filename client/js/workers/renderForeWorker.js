@@ -12,6 +12,26 @@ function initValues(e){
 	self.onmessage = handleLogic;
 }
 
+function renderShip(s, pkg){
+	pkg.add('setFillStyle', s.color);
+	var k = 20;
+	pkg.add('beginPath');
+	pkg.add('rect', s.pt.x-k/2, s.pt.y-k/2, k, k);
+	pkg.add('fill');
+	k = 8;
+	pkg.add('setFillStyle', 'rgb(200,0,250)');
+	pkg.add('beginPath');
+	pkg.add('rect', s.pt.x+s.dir.w-k/2, s.pt.y+s.dir.h-k/2, k, k);
+	pkg.add('fill');
+
+	pkg.add('setFillStyle', 'white');
+	pkg.add('setFont', '15px Courier New');
+	pkg.add('setTextAlign', 'center');
+	pkg.add('beginPath');
+	pkg.add('fillText', s.name, s.pt.x, s.pt.y-20);
+}
+
+
 function handleLogic(e){
 	var message = messageDecode(e.data);
 
@@ -32,18 +52,7 @@ function handleLogic(e){
 	// TODO
 
 	// THIS player stuff
-	(function(s){
-		pkg.add('setFillStyle', 'rgb(255,150,190)');
-		var k = 20;
-		pkg.add('beginPath');
-		pkg.add('rect', s.pt.x-k/2, s.pt.y-k/2, k, k);
-		pkg.add('fill');
-		k = 8;
-		pkg.add('setFillStyle', 'rgb(200,0,250)');
-		pkg.add('beginPath');
-		pkg.add('rect', s.pt.x+s.dir.w-k/2, s.pt.y+s.dir.h-k/2, k, k);
-		pkg.add('fill');
-	})(message.ship);
+	renderShip(message.ship, pkg);
 
 	// HUD stuff
 	message.trash.forEach(function(trash){
@@ -57,6 +66,9 @@ function handleLogic(e){
 
 		var baseR = Math.min(width, height)*2/5;
 		var dist = Math.sqrt(dx*dx+dy*dy);
+		if(dist < Math.min(width,height)/2){
+			return;
+		}
 		var distRt = Math.sqrt(dist);
 		var size = Math.min(5 + 1000/distRt, 100);
 		var da = Math.PI*size/500;
@@ -81,7 +93,17 @@ function handleLogic(e){
 	});
 
 
+
 	pkg.add('translate', message.camera.x-width/2, message.camera.y-height/2);
+
+
+	// HUD text
+	pkg.add('setFillStyle', 'white');
+	pkg.add('setFont', '30px Courier New');
+	pkg.add('setTextAlign', 'left');
+	pkg.add('beginPath');
+	pkg.add('fillText','Trash: '+message.ship.trash, 10, 40);
+
 
 	self.postMessage(pkg.seal());
 }
