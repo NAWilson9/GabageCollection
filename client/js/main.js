@@ -63,10 +63,10 @@ function bakeRendering(one, loadingCallback){
     var percent = i/def;
     loadingCallback(percent);
     //var angle = percent * 2 * Math.PI;
-    var size = 1e3;
+    var size = 5e3;
     ImageBaker.initialize(size, size);
     ImageBaker.bakeImage('starfield' + i, function (ctx) {
-        var stars = rand(size*size/2e5 | 0, size*size/5e4);
+        var stars = rand(size*size/1e5 | 0, size*size/4e4 | 0);
         for(var j=0;j<stars;j++) {
             var r = rand(150, 250),
                 num = rand(4, 12) * 2,
@@ -74,13 +74,14 @@ function bakeRendering(one, loadingCallback){
                 dt = 360 / num,
                 x = rand(0, size),
                 y = rand(0, size),
-                rad1 = rand(5, 10) * (8 - i),
-                rad2 = rand(5, rad1 / 2);
+                rad1 = rand(3, 8) * (10 - i*3),
+                rad2 = rand(rad1 *.2, rad1 *.8);
 
-            ctx.fillStyle = 'rgb(' +
+            ctx.fillStyle = 'rgba(' +
                 r + ',' +
                 rand(r *.8, r) + ',' +
-                rand(r *.6, r) + ')';
+                rand(r *.6, r) + ',' +
+                (.6*(1-percent)) + ')';
 
             ctx.beginPath();
             ctx.moveTo(x + rad1, y);

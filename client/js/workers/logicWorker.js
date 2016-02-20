@@ -71,8 +71,8 @@ var camera = new Point(0, 0);
 function handleCamera(){
     var dx = ship.pt.x-camera.x,
         dy = ship.pt.y-camera.y;
-    camera.x += dx/5;
-    camera.y += dy/5;
+    camera.x += dx*dx*dx/8e3;
+    camera.y += dy*dy*dy/8e3;
 }
 var players = [];
 var trash = [];// literally
