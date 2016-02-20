@@ -88,13 +88,13 @@ function loop(){
     if(gamepad){
         const left = gamepad.leftStick,
             right = gamepad.rightStick;
-        ship.v.w += Math.round(Math.cos(left.angle)*left.distance*1);//deltaT*100);
-        ship.v.h += Math.round(Math.sin(left.angle)*left.distance*1);//deltaT*100);
-        var factor = .9;//Math.pow(.9, 1+deltaT/100);
+        ship.v.w += Math.cos(left.angle)*left.distance*2;//deltaT*100);
+        ship.v.h += Math.sin(left.angle)*left.distance*2;//deltaT*100);
+        var factor = .85;//Math.pow(.9, 1+deltaT/100);
         ship.v.w *= factor;
         ship.v.h *= factor;
-        ship.pt.x += ship.v.w;
-        ship.pt.y += ship.v.h;
+        ship.pt.x = Math.round(ship.pt.x + ship.v.w);
+        ship.pt.y = Math.round(ship.pt.y + ship.v.h);
         ship.dir.w = Math.round(Math.cos(right.angle)*right.distance*20);
         ship.dir.h = Math.round(Math.sin(right.angle)*right.distance*20);
 
