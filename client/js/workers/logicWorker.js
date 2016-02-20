@@ -68,14 +68,17 @@ self.onmessage = function(e) {
 //    v: new Vector(8, 8)
 //};
 
-var ship = {
-    pt: new Point(50, 50),
-    v: new Vector(0, 0),
-    dir: new Vector(0, 0),
-    name: 'alain',
-    color: 'rgb(255,150,190)',
-    trash: 0
-};
+function Player(x, y, name, color){
+    return {
+        pt: new Point(x, y),
+        dir: new Vector(0, 0),
+        name: name,
+        color: color,
+        trash: 0
+    };
+}
+
+var ship = Player(50, 50, 'alain', 'rgb(255,150,190)');
 var camera = new Point(0, 0);
 function handleCamera(){
     var dx = ship.pt.x-camera.x,
@@ -83,8 +86,36 @@ function handleCamera(){
     camera.x += dx*dx*dx/8e3;
     camera.y += dy*dy*dy/8e3;
 }
-var players = [];
+var players = [Player(200, 100, 'the noob', 'rgb(0,240,250)')];
+var projectiles = [];
 var trash = [];// literally
+
+var launchProjectile = (function(){
+    var cooldown = false;
+    return function(){
+        var ts = (new Date()).getTime();
+        if(cooldown){
+            if(ts > cooldown){
+                cooldown = false;
+            }
+            else{
+                return;
+            }
+        }
+        cooldown = ts + 600;
+        var d = Math.sqrt(ship.dir.w*ship.dir.w+ship.dir.h*ship.dir.h);
+        var speed = 15;
+        var p = {
+            x:ship.pt.x,
+            y:ship.pt.y,
+            v: new Vector(ship.dir.w/d*speed, ship.dir.h/d*speed)
+        };
+        p.x+= p.v.w;
+        p.y+= p.v.h;
+        projectiles.push(p);
+        setTimeout(function(){projectiles.splice(projectiles.indexOf(p), 1);}, 2000);
+    }
+})();
 
 function DebugSpawnTrash() {
     var k = 100;
@@ -102,13 +133,9 @@ function loop(){
     if(gamepad){
         const left = gamepad.leftStick,
             right = gamepad.rightStick;
-        ship.v.w += Math.round(Math.cos(left.angle)*left.distance*left.distance*2);
-        ship.v.h += Math.round(Math.sin(left.angle)*left.distance*left.distance*2);
-        var factor = .85;//Math.pow(.9, 1+deltaT/100);
-        ship.v.w *= factor;
-        ship.v.h *= factor;
-        ship.pt.x = Math.round(ship.pt.x + ship.v.w);
-        ship.pt.y = Math.round(ship.pt.y + ship.v.h);
+        ship.pt.x += Math.round(Math.cos(left.angle)*left.distance*left.distance*10);
+        ship.pt.y += Math.round(Math.sin(left.angle)*left.distance*left.distance*10);
+
         ship.dir.w = Math.round(Math.cos(right.angle)*right.distance*20);
         ship.dir.h = Math.round(Math.sin(right.angle)*right.distance*20);
 
@@ -124,12 +151,23 @@ function loop(){
         if(gamepad.buttons.y){
             setUsername('Nerd');
         }
+        if(gamepad.buttons.rightTrigger){
+            launchProjectile();
+        }
     }
     handleCamera();
 
+    // update projectiles
+    projectiles.forEach(function(p){
+        p.x += p.v.w;
+        p.y += p.v.h;
+    });
+
+    // update player positions
+
 
     // check collisions
-    var collisionRadius = 20;
+    var collisionRadius = 40;
     for(var i=0;i<trash.length;i++){
         var t = trash[i];
         var dx = t.x - ship.pt.x;
@@ -146,6 +184,7 @@ function loop(){
         'ship': ship,
         'camera': camera,
         'players': players,
+        'projectiles': projectiles,
         'trash': trash
 	};
 
