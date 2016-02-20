@@ -4,15 +4,12 @@ importScripts(
 	'../fx/fxHelpers.js',
 	'../core/metrics.js',
 	'../core/xhr.js',
-    '../../socket.io/socket.io.js'
+    '../../socket.io/socket.io.js',
+    '../socket.js'
 );
 var TIMER = 'timer';
 metrics.createTimer(TIMER);
 var socket = io.connect('noobnoob.no-ip.org:1337');
-
-socket.on('/buttonPressedd', function(data){
-    console.log('GG: ' + data);
-});
 
 var gamepad = null;
 
@@ -84,7 +81,7 @@ function handleCamera(){
 var players = [];
 var trash = [];// literally
 
-var loop = function(){
+function loop(){
 	metrics.markTimer(TIMER);
 	var deltaT = metrics.getDeltaTime(TIMER)/1000;
 
@@ -103,15 +100,15 @@ var loop = function(){
         //console.log(gamepad.buttons);
         if(gamepad.buttons.a){
             //console.log('BUTTON PRESSED');
-            socket.emit('/joinRoom', 'hypestRoom');
+            joinRoom('hype');
         }
         if(gamepad.buttons.b){
             //console.log('BUTTON PRESSED');
-            socket.emit('/leaveRoom', 'hypestRoom');
+            leaveRoom();
         }
         if(gamepad.buttons.x){
             //console.log('BUTTON PRESSED');
-            socket.emit('/buttonPressed', 'a');
+            updateStatus('a');
         }
     }
     handleCamera();
