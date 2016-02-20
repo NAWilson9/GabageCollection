@@ -24,6 +24,6 @@ function updateStatus(data){
 //Event listeners
 
 //Receives updated client info from the server
-socket.on('/updateStatus', function(data){
+socket.on('updateStatus', function(data){
     console.log('New status: ' + data);
 });
