@@ -9,7 +9,6 @@ importScripts(
 );
 var TIMER = 'timer';
 metrics.createTimer(TIMER);
-var socket = io.connect('noobnoob.no-ip.org:1337');
 
 var gamepad = null;
 
@@ -98,17 +97,13 @@ function loop(){
         ship.dir.w = Math.round(Math.cos(right.angle)*right.distance*20);
         ship.dir.h = Math.round(Math.sin(right.angle)*right.distance*20);
 
-        //console.log(gamepad.buttons);
         if(gamepad.buttons.a){
-            //console.log('BUTTON PRESSED');
             joinRoom('hype');
         }
         if(gamepad.buttons.b){
-            //console.log('BUTTON PRESSED');
             leaveRoom();
         }
         if(gamepad.buttons.x){
-            //console.log('BUTTON PRESSED');
             updateStatus('a');
         }
     }

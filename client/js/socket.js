@@ -2,7 +2,7 @@
  * Created by Nick on 2/20/2016.
  */
 
-var socket = io.connect('localhost:1337');
+var socket = io.connect('noobnoob.no-ip.org:1337');
 
 //For joining a new game room. The server adds the socket to the room in order to separate sessions.
 function joinRoom(room){
@@ -18,12 +18,10 @@ function leaveRoom(){
 
 //Pushes current client info to the server
 function updateStatus(data){
-    socket.emit('updatePlayerStatus', data);
+    socket.emit('updateClientStatus', data);
 }
 
 //Event listeners
-
-//Receives updated client info from the server
 socket.on('updateGlobalStatus', function(data){
-    console.log('New status: ' + data);
+ console.log('New global status: ' + data);
 });

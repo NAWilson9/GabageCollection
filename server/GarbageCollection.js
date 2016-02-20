@@ -70,10 +70,15 @@ var initializeServer = function(functions, startServer) {
 
 
 //Socket routes
-io.on('connection', function(socket) {
+io.on('connection', function (socket) {
     console.log(new Date().toLocaleTimeString() + ' | A user has connected. IP Address: ' + socket.handshake.address +  ' Total users: ' + io.engine.clientsCount);
 
     var room;
+    socket.on('updateClientStatus', function(data){
+        console.log('New client status received: ' + data);
+        socket.to(room).emit('updateGlobalStatus', 'aaaa');
+    });
+
     socket.on('joinRoom', function(data){
         socket.leave(room);
         room = data;
@@ -84,15 +89,11 @@ io.on('connection', function(socket) {
     socket.on('leaveRoom', function(){
         socket.leave(room);
         console.log('A socket left room: ' + room);
-    });
-
-    socket.on('updatePlayerStatus', function(data){
-        console.log('Button pressed: ' + data);
-        socket.to(room).emit('updateGlobalStatus', 'aaaa');
+        room = '';
     });
 
     //A user has disconnected
-    socket.on('disconnect', function() {
+    socket.on('disconnect', function (data) {
         console.log(new Date().toLocaleTimeString() + ' | A user has disconnected. Total users: ' + io.engine.clientsCount);
     });
 });
