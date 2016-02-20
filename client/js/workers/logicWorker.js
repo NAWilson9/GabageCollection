@@ -3,7 +3,9 @@ importScripts(
 	'../fx/fxObjects.js',
 	'../fx/fxHelpers.js',
 	'../core/metrics.js',
-	'../core/xhr.js'
+	'../core/xhr.js',
+    '../../socket.io/socket.io.js',
+    '../socket.js'
 );
 var TIMER = 'timer';
 metrics.createTimer(TIMER);
@@ -89,6 +91,20 @@ function loop(){
         ship.pt.y += Math.round(Math.sin(left.angle)*left.distance*5);
         ship.dir.w = Math.round(Math.cos(right.angle)*right.distance*20);
         ship.dir.h = Math.round(Math.sin(right.angle)*right.distance*20);
+
+        //console.log(gamepad.buttons);
+        if(gamepad.buttons.a){
+            //console.log('BUTTON PRESSED');
+            joinRoom('hype');
+        }
+        if(gamepad.buttons.b){
+            //console.log('BUTTON PRESSED');
+            leaveRoom();
+        }
+        if(gamepad.buttons.x){
+            //console.log('BUTTON PRESSED');
+            updateStatus('a');
+        }
     }
     handleCamera();
 
@@ -102,4 +118,4 @@ function loop(){
 	setTimeout(loop,15);// 60 fps - prod deploy
 	//setTimeout(loop,33);// 30 fps - test deploy
 	//setTimeout(loop,50);// 20 fps - debug deploy
-}
+};
