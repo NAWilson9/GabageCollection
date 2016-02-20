@@ -57,7 +57,11 @@ var initializeServer = function(functions, startServer) {
             console.log(serverName + ' socket server running on port ' + port);
         });
     };
-    initializeServer(functions, start);
+    if(functions.length){
+        initializeServer(functions, start);
+    } else {
+        start();
+    }
 })();
 
 /*
