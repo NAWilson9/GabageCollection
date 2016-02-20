@@ -68,32 +68,62 @@ var initializeServer = function(functions, startServer) {
  Websocket stuff
  */
 
-
 //Socket routes
 io.on('connection', function (socket) {
     console.log(new Date().toLocaleTimeString() + ' | A user has connected. IP Address: ' + socket.handshake.address +  ' Total users: ' + io.engine.clientsCount);
 
-    var room;
+    //Receive client status data
     socket.on('updateClientStatus', function(data){
+        socket.to(socket.currentRoom).emit('updateGlobalStatus', 'aaaa');
+        console.log(new Date().toLocaleTimeString() + ' | Client data received in room "' + socket.currentRoom + '" from "' + socket.username + '": ' + data);
         console.log('New client status received: ' + data);
-        socket.to(room).emit('updateGlobalStatus', 'aaaa');
     });
 
-    socket.on('joinRoom', function(data){
-        socket.leave(room);
-        room = data;
-        socket.join(room);
-        console.log('A socket joined room: ' + room);
+    //A user has requested to set their username
+    socket.on('setUsername', function (newName){
+        if(socket.username !== newName){
+            var oldName = socket.username;
+            socket.username = newName;
+            console.log(new Date().toLocaleTimeString() + ' | A user in room "' + socket.currentRoom + '" has changed their name from "' + oldName + '" to "' + socket.username + '".');
+        }
     });
 
+    //A user requested to join a room
+    socket.on('joinRoom', function(roomName){
+        if(!socket.rooms.hasOwnProperty(roomName)){
+            //socket.leave(room);//In case this get's called while you're already in a room
+            socket.currentRoom = roomName;
+            //Get list of users already in the room
+            var users = [];
+            try{
+                var socketIdsInRoom = io.sockets.adapter.rooms[socket.currentRoom].sockets;
+                for (var socketId in socketIdsInRoom ) {
+                    users.push(io.sockets.connected[socketId].username);
+                }
+                //Notify previously connected users a new user connected to the room
+                socket.to(socket.currentRoom).emit('userJoined', socket.username);
+            } catch (e){
+                users.push('None');
+            }
+            socket.join(socket.currentRoom);
+            //Notify new user who was already in the room
+            socket.emit('previousUsers', users);
+            console.log(new Date().toLocaleTimeString() + ' | User "' + socket.username + '" has joined room "' + socket.currentRoom + '".');
+        }
+    });
+
+    //A user requested to leave their current room
     socket.on('leaveRoom', function(){
-        socket.leave(room);
-        console.log('A socket left room: ' + room);
-        room = '';
+        if(socket.rooms.hasOwnProperty(socket.currentRoom)){
+            socket.to(socket.currentRoom).emit('userLeft', socket.username);
+            socket.leave(socket.currentRoom);
+            console.log(new Date().toLocaleTimeString() + ' | User "' + socket.username + '" has left room "' + socket.currentRoom + '".');
+            socket.currentRoom = '';
+        }
     });
 
     //A user has disconnected
-    socket.on('disconnect', function (data) {
+    socket.on('disconnect', function() {
         console.log(new Date().toLocaleTimeString() + ' | A user has disconnected. Total users: ' + io.engine.clientsCount);
     });
 });

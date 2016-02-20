@@ -121,6 +121,9 @@ function loop(){
         if(gamepad.buttons.x){
             updateStatus('a');
         }
+        if(gamepad.buttons.y){
+            setUsername('Nerd');
+        }
     }
     handleCamera();
 
