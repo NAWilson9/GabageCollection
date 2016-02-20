@@ -21,10 +21,6 @@ function handleKeys(data) {
     });
 }
 
-function handleMouse(data) {
-    mouse = data;
-}
-
 function handleGamepad(data){
     gamepad = data;
 }
@@ -44,9 +40,9 @@ self.onmessage = function(e) {
             case 'key':
                 action = handleKeys;
                 break;
-            case 'mouse':
-                action = handleMouse;
-                break;
+            //case 'mouse':
+            //    action = handleMouse;
+            //    break;
             case 'gamepad':
                 action = handleGamepad;
                 break;
@@ -87,8 +83,6 @@ function loop(){
         ship.dir.w = Math.round(Math.cos(right.angle)*right.distance*20);
         ship.dir.h = Math.round(Math.sin(right.angle)*right.distance*20);
     }
-
-    console.log(ship.pt);
 
 	var message = {
         'ship': ship
