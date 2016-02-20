@@ -23,7 +23,6 @@ function updateStatus(data){
 
 function setUsername(data){
     socket.emit('setUsername', data);
-    socket.emit('getListOfUsers');
 }
 
 //Event listeners
@@ -36,7 +35,7 @@ socket.on('userJoined', function(data){
 });
 
 socket.on('previousUsers', function(data){
-    console.log('Current users: ' + data);
+    console.log('Previous users: ' + data);
 });
 
 socket.on('userLeft', function(data){
