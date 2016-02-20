@@ -74,9 +74,8 @@ io.on('connection', function (socket) {
 
     //Receive client status data
     socket.on('updateClientStatus', function(data){
-        socket.to(socket.currentRoom).emit('updateGlobalStatus', 'aaaa');
+        socket.to(socket.currentRoom).emit('updateGlobalStatus', data);
         console.log(new Date().toLocaleTimeString() + ' | Client data received in room "' + socket.currentRoom + '" from "' + socket.username + '": ' + data);
-        console.log('New client status received: ' + data);
     });
 
     //A user has requested to set their username
