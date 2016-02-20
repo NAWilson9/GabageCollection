@@ -1,0 +1,25 @@
+{
+  "name": "GarbageCollection",
+  "version": "0.0.1",
+  "description": "Race around a track and collect as much trash as you can before the time runs out.",
+  "url": "https://github.com/nawilson9/GabargeCollection",
+  "contributors": [
+    {
+      "name": "Nick Wilson",
+      "email": "nawilson9@gmail.com"
+    },
+    {
+      "name": "Chris Helmick",
+      "email": "helmick@iastate.edu"
+    },
+    {
+      "name": "Stefan Kraus",
+      "email": "stefanakraus@gmail.com"
+    }
+  ],
+  "dependencies":
+    {
+      "express": "4.13.4",
+      "socket.io": "1.4.5"
+    }
+}
