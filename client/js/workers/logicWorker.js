@@ -32,10 +32,7 @@ self.onmessage = function(e) {
     socketInfo = e.data.socketInfo;
 
     self.onmessage = function (e) {
-
-        var arr = e.data;
-        var msg = ab2str(arr);// TODO decode
-        var obj = JSON.parse(msg);
+        var obj = messageDecode(e.data);
 
         var action;
         switch (obj.type) {

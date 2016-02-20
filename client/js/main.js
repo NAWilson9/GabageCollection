@@ -176,9 +176,7 @@ function initLogicWorker(w, h){
         });
     };
     sendLogicWorkerMessage = function(obj){
-        var str = JSON.stringify(obj);// TODO fix
-        var arr = str2ab(str);
-        worker.postMessage(arr);
+        worker.postMessage(messageEncode(obj));
     };
     return worker;
 }
