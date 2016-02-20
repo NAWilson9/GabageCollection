@@ -24,20 +24,3 @@ function updateStatus(data){
 function setUsername(data){
     socket.emit('setUsername', data);
 }
-
-//Event listeners
-socket.on('updateGlobalStatus', function(data){
-    console.log('New global status: ' + data);
-});
-
-socket.on('userJoined', function(data){
-    console.log('A user joined your room: ' + data);
-});
-
-socket.on('previousUsers', function(data){
-    console.log('Previous users: ' + data);
-});
-
-socket.on('userLeft', function(data){
-    console.log('A user left your room: ' + data);
-});

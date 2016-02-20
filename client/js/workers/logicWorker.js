@@ -113,6 +113,10 @@ var launchProjectile = (function(){
         p.x+= p.v.w;
         p.y+= p.v.h;
         projectiles.push(p);
+        updateStatus({
+            event: 'fireProjectile',
+            data: p
+        });
         setTimeout(function(){projectiles.splice(projectiles.indexOf(p), 1);}, 2000);
     }
 })();
@@ -188,9 +192,56 @@ function loop(){
         'trash': trash
 	};
 
+    updateStatus({
+        event: 'playerUpdate',
+        data: ship
+    });
+
 	self.postMessage(messageEncode(message));
 
 	setTimeout(loop,15);// 60 fps - prod deploy
 	//setTimeout(loop,33);// 30 fps - test deploy
 	//setTimeout(loop,50);// 20 fps - debug deploy
-};
+}
+
+
+
+socket.on('userJoined', function(data){
+    console.log('A user joined your room: ' + data);
+    // TODO add more shtuff into this data block more than just name
+    players.push(Player(50, 50, data, 'blue'));
+});
+
+socket.on('previousUsers', function(data){
+    console.log('Previous users: ' + data);
+    // TODO add more shtuff into this data block more than just name
+    players.push(Player(50, 50, data, 'blue'));
+});
+
+socket.on('userLeft', function(data){
+    console.log('A user left your room: ' + data);
+    // TODO add more shtuff into this data block more than just name
+    for(var i=0;i<players.length;i++){
+        var p = players[i];
+        if(p.name == data){
+            players.splice(i, 1);
+        }
+    }
+});
+
+socket.on('updateGlobalStatus', function(data){
+    //console.log('New global status: ' + data);
+    // TODO grab updates to other players
+    switch(data.event){
+        case 'projectile':
+            projectiles.push(data.data);
+            break;
+        case 'playerUpdate':
+            players.forEach(function(p){
+                if(p.name == data.data.name){
+                    players.splice(players.indexOf(p), 1, data.data);
+                }
+            });
+            break;
+    }
+});
