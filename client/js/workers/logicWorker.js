@@ -79,7 +79,7 @@ function handleCamera(){
 var players = [];
 var trash = [];// literally
 
-var loop = function(){
+function loop(){
 	metrics.markTimer(TIMER);
 	var speed = 4;
 	var deltaT = metrics.getDeltaTime(TIMER)/1000*speed;
