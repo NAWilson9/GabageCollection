@@ -14,41 +14,6 @@ function handleLogic(e){
         message = JSON.parse(str),
         pkg = new RenderPackage();
 
-    pkg.add('setStrokeStyle', 'white');
-    pkg.add('setLineWidth', 1);
-    message.asteroids.forEach(function(arr){
-        pkg.add('beginPath');
-        var type = 'moveTo';
-        arr.forEach(function(pt){
-            pkg.add(type, pt.x, pt.y);
-            type = 'lineTo';
-        });
-        pkg.add('closePath');
-        pkg.add('stroke');
-    });
-
-
-	var mouse = message.mouse;
-
-    var box = message.box;
-
-    function renderBox(box, oolor) {
-        pkg.add('setFillStyle', oolor);
-        pkg.add('beginPath');
-        pkg.add('rect', box.x, box.y, box.w, box.h);
-        pkg.add('fill');
-    }
-    renderBox(box.hitbox, 'red');
-    message.env.forEach(function(b){
-        renderBox(b, 'blue');
-    });
-
-	pkg.add('setFillStyle','green');
-	pkg.add('beginPath');
-	var k = 10;
-	pkg.add('rect',mouse.x-k,mouse.y-k,k*2,k*2);
-	pkg.add('fill');
-
 
     (function(s){
         pkg.add('setFillStyle', 'rgb(255,150,190)');

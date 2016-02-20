@@ -268,17 +268,17 @@ var keyMapHandler = (function(){
             case "toggleDevMode":
                 toggleDevMode();
                 break;
-            case "tforward":
-                mem.rev = 1;
-            case "tbackward":
-                mem.rev = mem.rev ? mem.rev : 0;
-                var factor = (mem.rev * 3 - 1);
-                msg.push({
-                    'cmd': 'time',
-                    'factor': factor
-                });
-                logger.log(factor);
-                break;
+            //case "tforward":
+            //    mem.rev = 1;
+            //case "tbackward":
+            //    mem.rev = mem.rev ? mem.rev : 0;
+            //    var factor = (mem.rev * 3 - 1);
+            //    msg.push({
+            //        'cmd': 'time',
+            //        'factor': factor
+            //    });
+            //    logger.log(factor);
+            //    break;
         }
         return mem;
     };
