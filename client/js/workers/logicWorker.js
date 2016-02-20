@@ -3,10 +3,16 @@ importScripts(
 	'../fx/fxObjects.js',
 	'../fx/fxHelpers.js',
 	'../core/metrics.js',
-	'../core/xhr.js'
+	'../core/xhr.js',
+    '../../socket.io/socket.io.js'
 );
 var TIMER = 'timer';
 metrics.createTimer(TIMER);
+var socket = io.connect('localhost:1337');
+
+socket.on('/buttonPressedd', function(data){
+    console.log('GG: ' + data);
+});
 
 var gamepad = null;
 
@@ -77,7 +83,7 @@ function handleCamera(){
 var players = [];
 var trash = [];// literally
 
-function loop(){
+var loop = function(){
 	metrics.markTimer(TIMER);
 	var speed = 4;
 	var deltaT = metrics.getDeltaTime(TIMER)/1000*speed;
@@ -89,6 +95,20 @@ function loop(){
         ship.pt.y += Math.round(Math.sin(left.angle)*left.distance*5);
         ship.dir.w = Math.round(Math.cos(right.angle)*right.distance*20);
         ship.dir.h = Math.round(Math.sin(right.angle)*right.distance*20);
+
+        //console.log(gamepad.buttons);
+        if(gamepad.buttons.a){
+            //console.log('BUTTON PRESSED');
+            socket.emit('/joinRoom', 'hypestRoom');
+        }
+        if(gamepad.buttons.b){
+            //console.log('BUTTON PRESSED');
+            socket.emit('/leaveRoom', 'hypestRoom');
+        }
+        if(gamepad.buttons.x){
+            //console.log('BUTTON PRESSED');
+            socket.emit('/buttonPressed', 'a');
+        }
     }
     handleCamera();
 
@@ -102,4 +122,4 @@ function loop(){
 	setTimeout(loop,15);// 60 fps - prod deploy
 	//setTimeout(loop,33);// 30 fps - test deploy
 	//setTimeout(loop,50);// 20 fps - debug deploy
-}
+};
