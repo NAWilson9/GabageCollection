@@ -56,26 +56,44 @@ var imagePreloadMap = {
 
 function bakeRendering(one, loadingCallback){
     const i = one;
-    var def = 100;
+    var def = 3;
     if (i > def){
         return false;
     }
     var percent = i/def;
     loadingCallback(percent);
-    var angle = percent * 2 * Math.PI;
+    //var angle = percent * 2 * Math.PI;
+    var size = 1e3;
+    ImageBaker.initialize(size, size);
+    ImageBaker.bakeImage('starfield' + i, function (ctx) {
+        var stars = rand(size*size/2e5 | 0, size*size/5e4);
+        for(var j=0;j<stars;j++) {
+            var r = rand(150, 250),
+                num = rand(4, 12) * 2,
+                theta = 0,
+                dt = 360 / num,
+                x = rand(0, size),
+                y = rand(0, size),
+                rad1 = rand(5, 10) * (8 - i),
+                rad2 = rand(5, rad1 / 2);
 
-    ImageBaker.initialize(100, 100);
-    ImageBaker.bakeImage('debug' + i, function (ctx) {
-        ctx.fillStyle = 'orange';
-        var r = 50,
-            rs = r * Math.sin(angle),
-            rc = r * Math.cos(angle);
-        ctx.beginPath();
-        ctx.moveTo(50 + rc, 50 + rs);
-        ctx.arc(50, 50, r, angle, angle - .2, true);
-        ctx.arc(50, 50, r / 3, angle - .2, angle, false);
-        ctx.closePath();
-        ctx.fill();
+            ctx.fillStyle = 'rgb(' +
+                r + ',' +
+                rand(r *.8, r) + ',' +
+                rand(r *.6, r) + ')';
+
+            ctx.beginPath();
+            ctx.moveTo(x + rad1, y);
+            for (var t = 0; t < num; t++) {
+                var rad = (t % 2 == 0) ? rad1 : rad2;
+                ctx.lineTo(
+                    Math.floor(x + Math.cos(t / num * CONSTANTS.TWOPI) * rad),
+                    Math.floor(y + Math.sin(t / num * CONSTANTS.TWOPI) * rad)
+                );
+            }
+            ctx.closePath();
+            ctx.fill();
+        }
     });
     return true;
 }
@@ -111,8 +129,8 @@ function init(){
         });
 
     IO.bind("TILDE", "toggleDevMode", 500);
-    IO.bind("Q","tbackward");
-    IO.bind("W","tforward");
+    //IO.bind("Q","tbackward");
+    //IO.bind("W","tforward");
     IO.handleMouse(function(coords){
         var data = {
             'type': 'mouse',

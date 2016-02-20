@@ -67,6 +67,15 @@ var ship = {
     pt: new Point(50, 50),
     dir: new Vector(0, 0)
 };
+var camera = new Point(0, 0);
+function handleCamera(){
+    var dx = ship.pt.x-camera.x,
+        dy = ship.pt.y-camera.y;
+    camera.x += dx/5;
+    camera.y += dy/5;
+}
+var players = [];
+var trash = [];// literally
 
 function loop(){
 	metrics.markTimer(TIMER);
@@ -81,9 +90,11 @@ function loop(){
         ship.dir.w = Math.round(Math.cos(right.angle)*right.distance*20);
         ship.dir.h = Math.round(Math.sin(right.angle)*right.distance*20);
     }
+    handleCamera();
 
 	var message = {
-        'ship': ship
+        'ship': ship,
+        'camera': camera
 	};
 
 	self.postMessage(messageEncode(message));
