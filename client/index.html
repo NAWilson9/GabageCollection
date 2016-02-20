@@ -1,6 +1,8 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
+<meta charset="UTF-8">
+<title>Trash Collector, The Game.</title>
 <script src="js/external/PxGamepad/PxGamepad.js"></script>
 <script src="js/core/engineBasic.js"></script>
 <script src="js/core/loading.js"></script>
@@ -9,6 +11,8 @@
 <script src="js/core/logging.js"></script>
 <script src="js/core/IO.js"></script>
 <script src="js/main.js"></script>
+<script src="./socket.io/socket.io.js"></script>
+<script>var socket = io.connect(window.location.origin);</script>
 <style>
     body{
         background-color:black;
@@ -17,13 +21,6 @@
         border:1px solid white;
     }
 </style>
-    <meta charset="UTF-8">
-    <title>Trash Collector, The Game.</title>
-    <script src="js/controllerSupport.js"></script>
-    <script src="./socket.io/socket.io.js"></script>
-    <script>
-        var socket = io.connect(window.location.origin);
-    </script>
 </head>
 <body>
     <div id="canvasLoader"></div>
