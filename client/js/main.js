@@ -54,6 +54,8 @@ var imagePreloadMap = {
     'reddit2': 'http://i.imgur.com/d1JHPRq.jpg'
 };
 
+
+var boardSize = 5e3;
 function bakeRendering(one, loadingCallback){
     const i = one;
     var def = 3;
@@ -63,15 +65,14 @@ function bakeRendering(one, loadingCallback){
     var percent = i/def;
     loadingCallback(percent);
     //var angle = percent * 2 * Math.PI;
-    var size = 5e3;
-    ImageBaker.initialize(size, size);
+    ImageBaker.initialize(boardSize, boardSize);
     ImageBaker.bakeImage('starfield' + i, function (ctx) {
-        var stars = rand(size*size/8e4 | 0, size*size/2e4 | 0);
+        var stars = rand(boardSize*boardSize/8e4 | 0, boardSize*boardSize/2e4 | 0);
         for(var j=0;j<stars;j++) {
             var r = rand(150, 250),
                 num = rand(4, 12) * 2,
-                x = rand(0, size),
-                y = rand(0, size),
+                x = rand(0, boardSize),
+                y = rand(0, boardSize),
                 rad1 = (rand(3, 8) * (10 - i*3))/4,
                 rad2 = rand(rad1 *.2, rad1 *.8);
 
@@ -123,9 +124,9 @@ function init(){
         CONSTANTS.FOREGROUND,
         CONSTANTS.INTERFACE
     ]).forEach(function(name){
-            metrics.createTimer('RenderQueue'+name);
-            metrics.createTimer('Render'+name);
-        });
+        metrics.createTimer('RenderQueue'+name);
+        metrics.createTimer('Render'+name);
+    });
 
     IO.bind("TILDE", "toggleDevMode", 500);
     //IO.bind("Q","tbackward");
@@ -176,7 +177,8 @@ function initLogicWorker(w, h){
     worker.postMessage({
         'width':w,
         'height':h,
-        'socketInfo': window.location.origin
+        'socketInfo': window.location.origin,
+        'boardSize': boardSize
     });
 
     var subscribers = [];

@@ -14,6 +14,7 @@ var gamepad = null;
 
 var width,
     height,
+    boardSize,
     socketInfo;
 
 function handleKeys(data) {
@@ -32,6 +33,8 @@ self.onmessage = function(e) {
     width = e.data.width;
     height = e.data.height;
     socketInfo = e.data.socketInfo;
+    boardSize = e.data.boardSize;
+    DebugSpawnTrash();
 
     self.onmessage = function (e) {
         var obj = messageDecode(e.data);
@@ -80,6 +83,16 @@ function handleCamera(){
 var players = [];
 var trash = [];// literally
 
+function DebugSpawnTrash() {
+    var k = 100;
+    trash.push(new Point(
+        rand(boardSize / k, boardSize * (k - 1) / k),
+        rand(boardSize / k, boardSize * (k - 1) / k)
+    ));
+    console.log(boardSize);
+    setTimeout(DebugSpawnTrash, rand(5, 10) * 1000);
+}
+
 function loop(){
 	metrics.markTimer(TIMER);
 	var deltaT = metrics.getDeltaTime(TIMER)/1000;
@@ -109,9 +122,14 @@ function loop(){
     }
     handleCamera();
 
+    // check collisions
+    // TODO
+
 	var message = {
         'ship': ship,
-        'camera': camera
+        'camera': camera,
+        'players': players,
+        'trash': trash
 	};
 
 	self.postMessage(messageEncode(message));
