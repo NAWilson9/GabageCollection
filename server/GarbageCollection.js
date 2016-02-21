@@ -105,9 +105,9 @@ var trashThePlace = function(){
 
 var pushScores = function(){
     function compare(a,b) {
-        if (a.score < b.score)
+        if (a.score > b.score)
             return -1;
-        else if (a.score > b.score)
+        else if (a.score < b.score)
             return 1;
         else
             return 0;
