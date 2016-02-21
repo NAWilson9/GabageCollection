@@ -55,7 +55,7 @@ var imagePreloadMap = {
 };
 
 
-var boardSize = 1500;
+var boardSize = 2000;
 function bakeRendering(one, loadingCallback){
     const i = one;
     var def = 3;

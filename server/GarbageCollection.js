@@ -12,6 +12,11 @@ var server;
 var port = 1337;
 var serverName = 'GarbageCollection';
 
+//Game settings
+var maxTrashCans = 30;
+var boardSize = 2000;
+var k = 100;
+
 app.use(express.static('../client/', {
     extensions: ['html'],
     index: 'index.html'
@@ -67,7 +72,6 @@ var initializeServer = function(functions, startServer) {
 /*
  Websocket stuff
  */
-var Point = function(x,y){return {x:x,y:y};};
 var rand = function(min,max){
     if(min==undefined){return Math.random();}
     if(max==undefined){return Math.floor(Math.random()*min);}
@@ -86,8 +90,6 @@ var TrashCan = (function(){
     }
 })();
 
-var boardSize = 5e3;
-var k = 100;
 var trashThePlace = function(){
     return TrashCan(
         rand(boardSize / k, boardSize * (k - 1) / k),
@@ -102,6 +104,17 @@ io.on('connection', function (socket) {
     //Receive client status data and send to all other clients
     socket.on('updateClientStatus', function(data){
         socket.to(socket.currentRoom).emit('updateGlobalStatus', data);
+        if(data.event === 'garbageDay'){
+            for(var i = 0; i < io.sockets.adapter.rooms[socket.currentRoom].trash.length; i++){
+                if(io.sockets.adapter.rooms[socket.currentRoom].trash[i].id === data.id){
+                    io.sockets.adapter.rooms[socket.currentRoom].trash.splice(i, 1);
+                }
+            }
+            var newTrash = trashThePlace();
+            io.sockets.adapter.rooms[socket.currentRoom].trash.push(newTrash);
+            io.sockets.to(socket.currentRoom).emit('dumpingTrash', newTrash);
+        }
+
     });
 
     //A user has requested to set their username
@@ -142,7 +155,7 @@ io.on('connection', function (socket) {
                 socket.join(socket.currentRoom);
                 io.sockets.adapter.rooms[socket.currentRoom].messages = [];
                 io.sockets.adapter.rooms[socket.currentRoom].trash = [];
-                for(var i = 0; i < 3; i++) {
+                for(var i = 0; i < maxTrashCans; i++) {
                     io.sockets.adapter.rooms[socket.currentRoom].trash.push(trashThePlace());
                 }
                 io.sockets.to(socket.currentRoom).emit('dumpingTrash', io.sockets.adapter.rooms[socket.currentRoom].trash);

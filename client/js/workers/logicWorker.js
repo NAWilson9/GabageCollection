@@ -114,8 +114,9 @@ function Player(x, y, name, color){
     };
 }
 
-var ship = Player(50, 50, 'alain', 'rgb(255,150,190)');
-setUsername('alain');
+var tempName = rnGeezeus();
+var ship = Player(50, 50, tempName, 'rgb(255,150,190)');
+setUsername(tempName);
 var camera = new Point(0, 0);
 function handleCamera(){
     var dx = ship.pt.x-camera.x,
@@ -205,7 +206,7 @@ function loop(){
             updateStatus('a');
         }
         if(gamepad.buttons.y){
-            setUsername('Nerd' + Math.floor(Math.random()*10000));
+            setUsername(rnGeezeus());
         }
         if(gamepad.buttons.rightTrigger){
             launchProjectile();
@@ -338,3 +339,71 @@ socket.on('updateGlobalStatus', function(data){
             break;
     }
 });
+
+function rnGeezeus(){
+    var list = [
+        'Nerd',
+        'Noob',
+        'Robot',
+        'Pirate',
+        'Scout',
+        'Hobo',
+        'Munchkin',
+        'Pterodactyl',
+        'Saquan',
+        'Geek',
+        'Acrobat',
+        'Ace',
+        'Maverick',
+        'Stealth',
+        'Doc',
+        'Happy',
+        'Sneezy',
+        'Sleepy',
+        'Bashful',
+        'Dopey',
+        'Grumpy',
+        'Troll',
+        'Trashcan',
+        'Dunkey',
+        'Lizard Squad',
+        'HISSSSSSSSS',
+        'Cy',
+        'Hacker',
+        'HAX',
+        'Uber Micro',
+        'Boom Headshot',
+        'God Zilla',
+        'bacon',
+        'REKT',
+        '#REKT',
+        'Owned',
+        'Pwned',
+        'Actually a trashcan',
+        'Probably 10 years old',
+        'Actually 10 years old',
+        'Not 10 years old',
+        'GG',
+        'PCMR',
+        'Bic Boi',
+        'Biccer Boi',
+        'Biccest Boi',
+        'Rickles',
+        'Christles',
+        'Nickles',
+        'Kale',
+        'Spud',
+        'Doot Gloop',
+        'Scooty Doots',
+        'Denko',
+        'Lil D-Wayne',
+        'Alpha',
+        'Beta',
+        'Playa',
+        'WHAT IT ISSSSS',
+        'KnG',
+        "JJ's",
+        'Traesh'
+    ];
+    return list[Math.floor(Math.random() * list.length)];
+}
