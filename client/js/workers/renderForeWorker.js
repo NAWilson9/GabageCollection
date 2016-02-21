@@ -59,27 +59,8 @@ function renderShip(s, pkg){
 }
 
 function renderProjectile(p, pkg){
-	var k = 20;
-	var a = Math.atan(p.v.h/ p.v.w);
-	if(p.v.w<0){
-		a+=Math.PI;
-	}
-	pkg.add('setFillStyle','rgb(100,0,250)');
 	pkg.add('beginPath');
-	pkg.add('moveTo',
-		p.x+Math.cos(a-Math.PI*2/3)*k/2,
-		p.y+Math.sin(a-Math.PI*2/3)*k/2
-	);
-	pkg.add('lineTo',
-		p.x+Math.cos(a+Math.PI*2/3)*k/2,
-		p.y+Math.sin(a+Math.PI*2/3)*k/2
-	);
-	pkg.add('lineTo',
-		p.x+Math.cos(a)*k,
-		p.y+Math.sin(a)*k
-	);
-	pkg.add('closePath');
-	pkg.add('fill');
+	pkg.add('drawPreloadedImage', 'can', p.x - 20, p.y - 33, 40, 66);
 }
 
 function renderIndicator(ox, oy, dx, dy, pkg, r, g, b){

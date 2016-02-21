@@ -51,7 +51,8 @@ setLoadingBar(function(description, percent){
 var imagePreloadMap = {
 //    'name': 'url'
     'character': 'http://www.clipartbest.com/cliparts/4Tb/rxn/4TbrxnATg.gif',
-    'trash': 'http://vignette1.wikia.nocookie.net/muppet/images/5/5b/Oscar-can.png/revision/latest?cb=20120117061845'
+    'trash': 'http://vignette1.wikia.nocookie.net/muppet/images/5/5b/Oscar-can.png/revision/latest?cb=20120117061845',
+    'can': '../can.png'
 };
 
 

@@ -46,9 +46,8 @@
 
         self.listeners = self.listeners || {
             'gamepadconnected': function(e) {
-                var gamepad = e.gamepad;
-                if (gamepad.mapping === 'standard') {
-                    self.connectedGamepad = gamepad;
+                if (e.gamepad.mapping === 'standard') {
+                    self.connectedGamepad = e.gamepad;
                 }
             },
             'gamepaddisconnected': function(e) {

@@ -214,8 +214,8 @@ function loop(){
         var speedRacer = 5;
         if(gamepad.buttons.leftTrigger){
             energyAction(function(){
-                speedRacer = 15;
-            }, 2);
+                speedRacer = 13;
+            }, 4);
         }
         if(gamepad.buttons.leftStick){
             ship.projectiles = [];
@@ -269,7 +269,7 @@ function loop(){
         var dx = t.x - ship.pt.x;
         var dy = t.y - ship.pt.y;
         var dist = Math.sqrt(dx*dx+dy*dy);
-        if(dist < collisionRadius){
+        if(dist < (collisionRadius * 1.7)){
             pickupTrash(t);
         }
     }
@@ -361,7 +361,7 @@ function rnGeezeus(){
         'Hobo',
         'Munchkin',
         'Pterodactyl',
-        'Saquan',
+        'Daquan',
         'Geek',
         'Acrobat',
         'Ace',
@@ -416,7 +416,8 @@ function rnGeezeus(){
         "JJ's",
         'Traesh',
         'Tru Playa',
-        'Sweg'
+        'Sweg',
+        'Scrub'
     ];
     return list[Math.floor(Math.random() * list.length)];
 }

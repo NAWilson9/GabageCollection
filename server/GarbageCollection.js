@@ -13,9 +13,9 @@ var port = 1337;
 var serverName = 'GarbageCollection';
 
 //Game settings
-var maxTrashCans = 30;
+var maxTrashCans = 12;
 var boardSize = 2000;
-var k = 100;
+var k = 80;
 
 app.use(express.static('../client/', {
     extensions: ['html'],
@@ -72,12 +72,16 @@ var initializeServer = function(functions, startServer) {
 /*
  Websocket stuff
  */
+
+//Random number generator
 var rand = function(min,max){
     if(min==undefined){return Math.random();}
     if(max==undefined){return Math.floor(Math.random()*min);}
     if(max<min){var temp=max;max=min;min=temp;}
     return Math.floor(Math.random()*(max-min)+min);
 };
+
+//Trash objects that get rendered
 var TrashCan = (function(){
     var id = 0;
     return function(x, y) {
@@ -90,6 +94,7 @@ var TrashCan = (function(){
     }
 })();
 
+//Returns a new trash object
 var trashThePlace = function(){
     return TrashCan(
         rand(boardSize / k, boardSize * (k - 1) / k),
@@ -114,7 +119,6 @@ io.on('connection', function (socket) {
             io.sockets.adapter.rooms[socket.currentRoom].trash.push(newTrash);
             io.sockets.to(socket.currentRoom).emit('dumpingTrash', newTrash);
         }
-
     });
 
     //A user has requested to set their username
@@ -158,9 +162,8 @@ io.on('connection', function (socket) {
                 for(var i = 0; i < maxTrashCans; i++) {
                     io.sockets.adapter.rooms[socket.currentRoom].trash.push(trashThePlace());
                 }
-                io.sockets.to(socket.currentRoom).emit('dumpingTrash', io.sockets.adapter.rooms[socket.currentRoom].trash);
+                io.sockets.to(socket.currentRoom).emit('dumpingTrash', io.sockets.adapter.rooms[socket.currentRoom].trash);//Todo wii?
             }
-            socket.join(socket.currentRoom);
             //Notify new user which users were already in the room
             callback({
                 'status': 'good',
@@ -189,7 +192,7 @@ io.on('connection', function (socket) {
     socket.on('postMessage', function(message){
         io.sockets.adapter.rooms[socket.currentRoom].messages.push(message);
         socket.to(socket.currentRoom).emit('receiveMessage', message);
-    });
+    });//Todo
 
     //A user has disconnected
     socket.on('disconnect', function() {
