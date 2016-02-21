@@ -163,6 +163,9 @@ function init(){
             }
         };
         logger.log(data.data.leftStick.distance);
+        if(gp.buttons.select){
+            window.location.reload();// TODO remove
+        }
         sendLogicWorkerMessage(data);
         setTimeout(gamepadUpdate, gamepadPollRate);
     })();
