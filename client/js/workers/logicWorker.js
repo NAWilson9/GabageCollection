@@ -84,6 +84,7 @@ function Player(x, y, name, color){
 }
 
 var ship = Player(50, 50, 'alain', 'rgb(255,150,190)');
+setUsername('alain');
 var camera = new Point(0, 0);
 function handleCamera(){
     var dx = ship.pt.x-camera.x,
@@ -122,16 +123,16 @@ var launchProjectile = (function(){
 })();
 
 function getHit(){
-    // TODO do something more here, signal server to drop trash here for other people
+    // TODO do something more here, signal server to drop ` here for other people
     ship.trash--;
 }
 
 function pickupTrash(t){
     trash.forEach(function(tr){
         if(tr.id == t.id){
-            trash.remove(tr);
+            trash.splice(trash.indexOf(tr), 1);
             updateStatus({
-                event: 'GarbageDay',
+                event: 'garbageDay',
                 id: tr.id
             });
         }
@@ -253,6 +254,7 @@ socket.on('userLeft', function(data){
         var p = players[i];
         if(p.name == data){
             players.splice(i, 1);
+            break;
         }
     }
 });
@@ -278,7 +280,7 @@ socket.on('updateGlobalStatus', function(data){
         case 'garbageDay':
             trash.forEach(function(t){
                 if(t.id == data.id){
-                    trash.remove(t);
+                    trash.splice(trash.indexOf(t), 1);
                 }
             });
             break;

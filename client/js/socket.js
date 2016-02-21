@@ -14,7 +14,10 @@ function joinRoom(room){
     socket.emit('joinRoom', room, function(response){
         if(response.status === 'good'){
             // TODO add more shtuff into this data block more than just name
-            players.push(Player(50, 50, response.users, 'blue'));
+            var users = response.users;
+            users.forEach(function(user){
+                players.push(Player(50, 50, user, 'rgb(255,150,190)'));
+            });
             trash = response.trash.slice();
             console.log('Successfully joined room "' + room + '". Previous users: ' + response.users);
 
@@ -24,7 +27,6 @@ function joinRoom(room){
     });
 }
 
-//Sets the players username
 function setUsername(data){
     socket.emit('setUsername', data, function(response){
         if(response === 'good'){
@@ -41,8 +43,9 @@ function leaveRoom(){
     socket.emit('leaveRoom', function(response){
         if(response === 'good'){
             trash = [];
-            ship.trash = 0;
+            //ship = null;
             players = [];
+            ship.trash = 0;
             console.log('Successfully left room.')
         } else{
             console.error('Error leaving room. Reason: ' + response);

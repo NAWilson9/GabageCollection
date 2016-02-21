@@ -64,26 +64,6 @@ var initializeServer = function(functions, startServer) {
     }
 })();
 
-//Trash generation handling
-/*var trash = [];// literally
-var Point = function(x,y){return {x:x,y:y};};
-function spawnTrash(){
-    var k = 100;
-    trash.push(new Point(
-        rand(boardSize / k, boardSize * (k - 1) / k),
-        rand(boardSize / k, boardSize * (k - 1) / k)
-    ));
-    io.to(roomname).emit(trash);
-    setTimeout(spawnTrash, rand(5, 10) * 1000);
-}
-
-var socketIdsInRoom = io.sockets.adapter.rooms[socket.currentRoom].sockets
-function createRoom(roomname){
-}*/
-
-
-
-
 /*
  Websocket stuff
  */
@@ -105,25 +85,15 @@ var TrashCan = (function(){
         };
     }
 })();
+
 var boardSize = 5e3;
 var k = 100;
 var trashThePlace = function(){
-    var rooms = io.sockets.adapter.rooms;
-    for(var guid in rooms){
-        if(rooms.hasOwnProperty(guid)){
-            var room = rooms[guid];
-            if(room.hasOwnProperty('trash')){
-                var t = TrashCan(
-                    rand(boardSize / k, boardSize * (k - 1) / k),
-                    rand(boardSize / k, boardSize * (k - 1) / k)
-                );
-                room.trash.push(t);
-                io.sockets.to(guid).emit('dumpingTrash', t);
-            }
-        }
-    }
+    return TrashCan(
+        rand(boardSize / k, boardSize * (k - 1) / k),
+        rand(boardSize / k, boardSize * (k - 1) / k)
+    );
 };
-setInterval(trashThePlace, rand(2,4) * 1000);
 
 //Socket routes
 io.on('connection', function (socket) {
@@ -170,8 +140,12 @@ io.on('connection', function (socket) {
                 socket.join(socket.currentRoom);
             } catch(e){//Todo new room setup
                 socket.join(socket.currentRoom);
-                io.sockets.adapter.rooms[socket.currentRoom].trash = [];
                 io.sockets.adapter.rooms[socket.currentRoom].messages = [];
+                io.sockets.adapter.rooms[socket.currentRoom].trash = [];
+                for(var i = 0; i < 3; i++) {
+                    io.sockets.adapter.rooms[socket.currentRoom].trash.push(trashThePlace());
+                }
+                io.sockets.to(socket.currentRoom).emit('dumpingTrash', io.sockets.adapter.rooms[socket.currentRoom].trash);
             }
             socket.join(socket.currentRoom);
             //Notify new user which users were already in the room
@@ -206,6 +180,7 @@ io.on('connection', function (socket) {
 
     //A user has disconnected
     socket.on('disconnect', function() {
+        socket.to(socket.currentRoom).emit('userLeft', socket.username);
         console.log(new Date().toLocaleTimeString() + ' | A user has disconnected. Total users: ' + io.engine.clientsCount);
     });
 });

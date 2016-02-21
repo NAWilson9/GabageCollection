@@ -55,7 +55,7 @@ var imagePreloadMap = {
 };
 
 
-var boardSize = 5e3;
+var boardSize = 1500;
 function bakeRendering(one, loadingCallback){
     const i = one;
     var def = 3;
@@ -63,7 +63,6 @@ function bakeRendering(one, loadingCallback){
         return false;
     }
     var percent = i/def;
-    loadingCallback(percent);
     //var angle = percent * 2 * Math.PI;
     ImageBaker.initialize(boardSize, boardSize);
     ImageBaker.bakeImage('starfield' + i, function (ctx) {
