@@ -31,6 +31,29 @@ function renderShip(s, pkg){
 	pkg.add('fillText', s.name, s.pt.x, s.pt.y-20);
 }
 
+function renderProjectile(p, pkg){
+	var k = 20;
+	var a = Math.atan(p.v.h/ p.v.w);
+	if(p.v.w<0){
+		a+=Math.PI;
+	}
+	pkg.add('setFillStyle','rgb(100,0,250)');
+	pkg.add('beginPath');
+	pkg.add('moveTo',
+		p.x+Math.cos(a-Math.PI*2/3)*k/2,
+		p.y+Math.sin(a-Math.PI*2/3)*k/2
+	);
+	pkg.add('lineTo',
+		p.x+Math.cos(a+Math.PI*2/3)*k/2,
+		p.y+Math.sin(a+Math.PI*2/3)*k/2
+	);
+	pkg.add('lineTo',
+		p.x+Math.cos(a)*k,
+		p.y+Math.sin(a)*k
+	);
+	pkg.add('closePath');
+	pkg.add('fill');
+}
 
 function handleLogic(e){
 	var message = messageDecode(e.data);
@@ -57,28 +80,13 @@ function handleLogic(e){
 	renderShip(message.ship, pkg);
 
 	// projectiles
-	message.projectiles.forEach(function(p){
-		var k = 20;
-		var a = Math.atan(p.v.h/ p.v.w);
-		if(p.v.w<0){
-			a+=Math.PI;
-		}
-		pkg.add('setFillStyle','rgb(100,0,250)');
-		pkg.add('beginPath');
-		pkg.add('moveTo',
-			p.x+Math.cos(a-Math.PI*2/3)*k/2,
-			p.y+Math.sin(a-Math.PI*2/3)*k/2
-		);
-		pkg.add('lineTo',
-			p.x+Math.cos(a+Math.PI*2/3)*k/2,
-			p.y+Math.sin(a+Math.PI*2/3)*k/2
-		);
-		pkg.add('lineTo',
-			p.x+Math.cos(a)*k,
-			p.y+Math.sin(a)*k
-		);
-		pkg.add('closePath');
-		pkg.add('fill');
+	message.ship.projectiles.forEach(function(p){
+		renderProjectile(p, pkg);
+	});
+	message.players.forEach(function(pl){
+		pl.projectiles.forEach(function(p){
+			renderProjectile(p, pkg);
+		});
 	});
 
 	// HUD stuff
