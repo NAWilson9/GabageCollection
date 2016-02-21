@@ -64,9 +64,55 @@ var initializeServer = function(functions, startServer) {
     }
 })();
 
+//Trash generation handling
+/*var trash = [];// literally
+var Point = function(x,y){return {x:x,y:y};};
+function spawnTrash(){
+    var k = 100;
+    trash.push(new Point(
+        rand(boardSize / k, boardSize * (k - 1) / k),
+        rand(boardSize / k, boardSize * (k - 1) / k)
+    ));
+    io.to(roomname).emit(trash);
+    setTimeout(spawnTrash, rand(5, 10) * 1000);
+}
+
+var socketIdsInRoom = io.sockets.adapter.rooms[socket.currentRoom].sockets
+function createRoom(roomname){
+}*/
+
+
+
+
 /*
  Websocket stuff
  */
+var Point = function(x,y){return {x:x,y:y};};
+var rand = function(min,max){
+    if(min==undefined){return Math.random();}
+    if(max==undefined){return Math.floor(Math.random()*min);}
+    if(max<min){var temp=max;max=min;min=temp;}
+    return Math.floor(Math.random()*(max-min)+min);
+};
+var boardSize = 5e3;
+var k = 100;
+var trashThePlace = function(){
+    var rooms = io.sockets.adapter.rooms;
+    for(var guid in rooms){
+        if(rooms.hasOwnProperty(guid)){
+            var room = rooms[guid];
+            if(room.hasOwnProperty('trash')){
+                var point = new Point(
+                    rand(boardSize / k, boardSize * (k - 1) / k),
+                    rand(boardSize / k, boardSize * (k - 1) / k)
+                );
+                room.trash.push(point);
+                io.sockets.to(guid).emit('dumpingTrash', point);
+            }
+        }
+    }
+};
+setInterval(trashThePlace, rand(2,4) * 1000);
 
 //Socket routes
 io.on('connection', function (socket) {
@@ -75,8 +121,6 @@ io.on('connection', function (socket) {
     //Receive client status data and send to all other clients
     socket.on('updateClientStatus', function(data){
         socket.to(socket.currentRoom).emit('updateGlobalStatus', data);
-        //console.log(new Date().toLocaleTimeString() + ' | Client data received in room "' + socket.currentRoom + '" from "' + socket.username + '".');
-        //console.log(data);
     });
 
     //A user has requested to set their username
@@ -89,7 +133,7 @@ io.on('connection', function (socket) {
             callback("Can't set username to the same value.");
         } else {
             var oldName = socket.username;
-            socket.username = newName;
+            socket.username = newName;//todo prevent setting it to the same name as someone else
             callback('good');
             console.log(new Date().toLocaleTimeString() + ' | A user has changed their name from "' + oldName + '" to "' + socket.username + '".');
         }
@@ -105,19 +149,26 @@ io.on('connection', function (socket) {
             socket.currentRoom = roomName;
             //Get list of users already in the room
             var users = [];
-            try{
-                var socketIdsInRoom = io.sockets.adapter.rooms[socket.currentRoom].sockets;//Basically sees if the room exists. Will fail if it doesn't.
+            try{//Basically sees if the room exists. Will fail if it doesn't.
+                var socketIdsInRoom = io.sockets.adapter.rooms[socket.currentRoom].sockets;
                 for (var socketId in socketIdsInRoom ) {
                     users.push(io.sockets.connected[socketId].username);
                 }
                 //Notify previously connected users a new user connected to the room
                 socket.to(socket.currentRoom).emit('userJoined', socket.username);
-            } catch(e){}
+                socket.join(socket.currentRoom);
+            } catch(e){//Todo new room setup
+                socket.join(socket.currentRoom);
+                io.sockets.adapter.rooms[socket.currentRoom].trash = [];
+                io.sockets.adapter.rooms[socket.currentRoom].messages = [];
+            }
             socket.join(socket.currentRoom);
             //Notify new user which users were already in the room
             callback({
                 'status': 'good',
-                'users': users
+                'users': users,
+                'messages': io.sockets.adapter.rooms[socket.currentRoom].messages,
+                'trash': io.sockets.adapter.rooms[socket.currentRoom].trash
             });
             console.log(new Date().toLocaleTimeString() + ' | User "' + socket.username + '" has joined room "' + socket.currentRoom + '".');
         }
@@ -134,6 +185,12 @@ io.on('connection', function (socket) {
             console.log(new Date().toLocaleTimeString() + ' | User "' + socket.username + '" has left room "' + socket.currentRoom + '".');
             socket.currentRoom = '';
         }
+    });
+
+    //Receives chat messages from the client, persists them, and sends them to everyone else
+    socket.on('postMessage', function(message){
+        io.sockets.adapter.rooms[socket.currentRoom].messages.push(message);
+        socket.to(socket.currentRoom).emit('receiveMessage', message);
     });
 
     //A user has disconnected
