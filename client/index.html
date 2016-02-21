@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
-<head>
+<html>
+<head lang="en">
 <meta charset="UTF-8">
 <title>Trash Collector, The Game.</title>
 <script src="js/external/PxGamepad/PxGamepad.js"></script>
@@ -12,6 +12,18 @@
 <script src="js/core/IO.js"></script>
 <script src="js/main.js"></script>
 <script src="./socket.io/socket.io.js"></script>
+    <script>
+        var socket = io.connect('noobnoob.no-ip.org:1337');
+        socket.emit('joinRoom', 'nerd', function(){});
+        socket.on('receiveScoreboard', function(data){
+            for(var i = 1; i <= 10; i++){
+                var elemName = document.getElementById(i + '.name');
+                var elemScore = document.getElementById(i + '.score');
+                elemName.innerHTML = data[i-1].name;
+                elemScore.innerHTML = data[i-1].score;
+            }
+        });
+    </script>
 <style>
     body{
         background-color:black;
@@ -19,10 +31,30 @@
     canvas{
         border:1px solid white;
     }
+
+    #scoreboard{
+        color: white;
+        position: absolute;
+        left: 975px;
+        top: 30px;
+    }
 </style>
 </head>
 <body>
 <div id="canvasLoader"></div>
+<div id="scoreboard">
+    <h1>Top 10:</h1>
+    <h2>1. <span id="1.name"></span> | <span id="1.score"></span></h2>
+    <h2>2. <span id="2.name"></span> | <span id="2.score"></span></h2>
+    <h2>3. <span id="3.name"></span> | <span id="3.score"></span></h2>
+    <h2>4. <span id="4.name"></span> | <span id="4.score"></span></h2>
+    <h2>5. <span id="5.name"></span> | <span id="5.score"></span></h2>
+    <h2>6. <span id="6.name"></span> | <span id="6.score"></span></h2>
+    <h2>7. <span id="7.name"></span> | <span id="7.score"></span></h2>
+    <h2>8. <span id="8.name"></span> | <span id="8.score"></span></h2>
+    <h2>9. <span id="9.name"></span> | <span id="9.score"></span></h2>
+    <h2>10. <span id="10.name"></span> | <span id="10.score"></span></h2>
+</div>
 <audio autoplay>
     <source src="Dlay_-_11_-_Space_Mountain.mp3" type="audio/mpeg">
 </audio>

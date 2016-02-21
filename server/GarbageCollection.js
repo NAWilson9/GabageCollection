@@ -17,6 +17,7 @@ var maxTrashCans = 12;
 var boardSize = 2000;
 var k = 80;
 
+app.use(express.static('../node_modules/angular'));
 app.use(express.static('../client/', {
     extensions: ['html'],
     index: 'index.html'
@@ -102,22 +103,58 @@ var trashThePlace = function(){
     );
 };
 
+var pushScores = function(){
+    function compare(a,b) {
+        if (a.score < b.score)
+            return -1;
+        else if (a.score > b.score)
+            return 1;
+        else
+            return 0;
+    }
+    var scores = [];
+    try{
+        var socketIdsInRoom = io.sockets.adapter.rooms['hype'].sockets;
+        for (var socketId in socketIdsInRoom ) {
+            if(io.sockets.connected[socketId].username){
+                scores.push({'name': io.sockets.connected[socketId].username,
+                    'score': io.sockets.connected[socketId].score});
+            }
+        }
+        scores.sort(compare);
+        io.sockets.to('nerd').emit('receiveScoreboard', scores);
+    } catch(e){}
+};
+setInterval(pushScores, 1000);
+
+
 //Socket routes
 io.on('connection', function (socket) {
     console.log(new Date().toLocaleTimeString() + ' | A user has connected. IP Address: ' + socket.handshake.address +  ' Total users: ' + io.engine.clientsCount);
 
+
+    socket.on('pushScore', function(data){
+        socket.score = data;
+    });
+
     //Receive client status data and send to all other clients
     socket.on('updateClientStatus', function(data){
         socket.to(socket.currentRoom).emit('updateGlobalStatus', data);
-        if(data.event === 'garbageDay'){
-            for(var i = 0; i < io.sockets.adapter.rooms[socket.currentRoom].trash.length; i++){
-                if(io.sockets.adapter.rooms[socket.currentRoom].trash[i].id === data.id){
-                    io.sockets.adapter.rooms[socket.currentRoom].trash.splice(i, 1);
+        socket.to(socket.currentRoom).emit('receiveScores', {
+            'name': socket.username,
+            'score': data.score
+        });
+        if(data.event === 'garbageDay') {
+            try {
+                for (var i = 0; i < io.sockets.adapter.rooms[socket.currentRoom].trash.length; i++) {
+                    if (io.sockets.adapter.rooms[socket.currentRoom].trash[i].id === data.id) {
+                        io.sockets.adapter.rooms[socket.currentRoom].trash.splice(i, 1);
+                    }
                 }
-            }
-            var newTrash = trashThePlace();
-            io.sockets.adapter.rooms[socket.currentRoom].trash.push(newTrash);
-            io.sockets.to(socket.currentRoom).emit('dumpingTrash', newTrash);
+                var newTrash = trashThePlace();
+                io.sockets.adapter.rooms[socket.currentRoom].trash.push(newTrash);
+                io.sockets.to(socket.currentRoom).emit('dumpingTrash', newTrash);
+            } catch(e){}
         }
     });
 

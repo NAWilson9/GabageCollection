@@ -30,6 +30,11 @@ function updateStatus(data){
     socket.emit('updateClientStatus', data);
 }
 
+function updateScore(){;
+    socket.emit('pushScore', ship.trash)
+}
+setInterval(updateScore, 1000);
+
 //For joining a new game room. The server adds the socket to the room in order to separate sessions.
 var joinRoom = debounce(function(room){
     socket.emit('joinRoom', room, function(response){
