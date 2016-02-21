@@ -4,23 +4,43 @@
 
 var socket = io.connect('noobnoob.no-ip.org:1337');
 
-//For joining a new game room. The server adds the socket to the room in order to separate sessions.
-function joinRoom(room){
-    socket.emit('joinRoom', room);
-    //console.log('Joined room: ' + room);
-}
-
-//Leaves the current room.
-function leaveRoom(){
-    socket.emit('leaveRoom');
-    //console.log('Left room.');
-}
-
 //Pushes current client info to the server
 function updateStatus(data){
     socket.emit('updateClientStatus', data);
 }
 
+//For joining a new game room. The server adds the socket to the room in order to separate sessions.
+function joinRoom(room){
+    socket.emit('joinRoom', room, function(response){
+        if(response.status === 'good'){
+            console.log('Successfully joined room "' + room + '". Previous users: ' + response.users);
+            // TODO add more shtuff into this data block more than just name
+            players.push(Player(50, 50, response.users, 'blue'));
+        } else {
+            console.error('Error joining room. Reason: ' + response);
+        }
+    });
+}
+
+//Sets the players username
 function setUsername(data){
-    socket.emit('setUsername', data);
+    socket.emit('setUsername', data, function(response){
+        if(response === 'good'){
+            ship.name = data;
+            console.log('Username successfully set.');
+        } else {
+            console.error('Error setting username. Reason: ' + response);
+        }
+    });
+}
+
+//Leaves the current room.
+function leaveRoom(){
+    socket.emit('leaveRoom', function(response){
+        if(response === 'good'){
+            console.log('Successfully left room.')
+        } else{
+            console.error('Error leaving room. Reason: ' + response);
+        }
+    });
 }

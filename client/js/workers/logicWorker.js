@@ -159,7 +159,7 @@ function loop(){
             updateStatus('a');
         }
         if(gamepad.buttons.y){
-            setUsername('Nerd');
+            setUsername('Nerd' + Math.floor(Math.random()*10000));
         }
         if(gamepad.buttons.rightTrigger){
             launchProjectile();
@@ -217,12 +217,6 @@ function loop(){
 
 socket.on('userJoined', function(data){
     console.log('A user joined your room: ' + data);
-    // TODO add more shtuff into this data block more than just name
-    players.push(Player(50, 50, data, 'blue'));
-});
-
-socket.on('previousUsers', function(data){
-    console.log('Previous users: ' + data);
     // TODO add more shtuff into this data block more than just name
     players.push(Player(50, 50, data, 'blue'));
 });
