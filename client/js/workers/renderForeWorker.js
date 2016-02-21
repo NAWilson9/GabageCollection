@@ -15,7 +15,6 @@ function initValues(e){
 function renderShip(s, pkg){
 
 	// particles
-
 	for(var i= 0, len = 10*Math.sqrt(s.vel.w* s.vel.w+ s.vel.h* s.vel.h);i<len;i++){
 		var size = rand(10, 100)/(i/4+3);
 		pkg.add('setFillStyle','rgba(50, 50, 50, '+(0.1+0.2/size)+')');
@@ -26,24 +25,37 @@ function renderShip(s, pkg){
 		pkg.add('fill')
 	}
 
-	pkg.add('setFillStyle', s.color);
-	var k = 20;
-	pkg.add('beginPath');
-	pkg.add('rect', s.pt.x-k/2, s.pt.y-k/2, k, k);
-	pkg.add('fill');
-	k = 8;
-	pkg.add('setFillStyle', 'rgb(200,0,250)');
-	pkg.add('beginPath');
-	pkg.add('rect', s.pt.x+s.dir.w-k/2, s.pt.y+s.dir.h-k/2, k, k);
-	pkg.add('fill');
+	//pkg.add('setFillStyle', s.color);
+	//var k = 20;
+	//pkg.add('beginPath');
+	//pkg.add('rect', s.pt.x-k/2, s.pt.y-k/2, k, k);
+	//pkg.add('fill');
+	//k = 8;
+	//pkg.add('setFillStyle', 'rgb(200,0,250)');
+	//pkg.add('beginPath');
+	//pkg.add('rect', s.pt.x+s.dir.w-k/2, s.pt.y+s.dir.h-k/2, k, k);
+	//pkg.add('fill');
 
-	renderBar(s.pt.x-25, s.pt.y-20, 50, 5, s.energy.max, s.energy.current, 'rgba(0,0,0,0.2)', 'green', pkg);
+	var ox = s.pt.x,
+		oy = s.pt.y,
+		theta = Math.atan(s.dir.h/ s.dir.w)+Math.PI;
+	if(s.dir.w < 0){
+		theta+=Math.PI;
+	}
+	pkg.add('translate', ox, oy);
+	pkg.add('rotate', theta);
+	pkg.add('beginPath');
+	pkg.add('drawPreloadedImage', 'character', -40, -20, 80, 40);
+	pkg.add('rotate', -theta);
+	pkg.add('translate', -ox, -oy);
+
+	renderBar(s.pt.x-25, s.pt.y-30, 50, 5, s.energy.max, s.energy.current, 'rgba(0,0,0,0.2)', 'green', pkg);
 
 	pkg.add('setFillStyle', 'white');
 	pkg.add('setFont', '15px Courier New');
 	pkg.add('setTextAlign', 'center');
 	pkg.add('beginPath');
-	pkg.add('fillText', s.name, s.pt.x, s.pt.y-22);
+	pkg.add('fillText', s.name, s.pt.x, s.pt.y-32);
 }
 
 function renderProjectile(p, pkg){
@@ -117,11 +129,11 @@ function renderBar(x,y,w,h,max,cur,c1,c2,pkg){
 }
 
 function renderTrash(trash, pkg){
-	var r = 10;
-	pkg.add('setFillStyle', 'rgb(180,180,200)');
+	//pkg.add('setFillStyle', 'rgb(180,180,200)');
 	pkg.add('beginPath');
-	pkg.add('rect', trash.x-r, trash.y-r, r*2, r*2);
-	pkg.add('fill');
+	pkg.add('drawPreloadedImage', 'trash', trash.x-30, trash.y-40, 60, 80);
+	//pkg.add('rect', trash.x-r, trash.y-r, r*2, r*2);
+	//pkg.add('fill');
 }
 
 function handleLogic(e){

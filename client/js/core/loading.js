@@ -56,7 +56,15 @@ var Preloader = (function(){
 
     return {
         preloadImages: preloadImages,
-        getImage: getImage
+        getImage: getImage,
+        drawImage: function(ctx, name, x, y, w, h){
+            if(!images.hasOwnProperty(name)){
+                console.error('Unknown name for preloaded image', name);
+                return null;
+            }
+            var img = images[name];
+            ctx.drawImage(img, x, y, w, h);
+        }
     };
 })();
 

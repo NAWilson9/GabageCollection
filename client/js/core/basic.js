@@ -20,6 +20,11 @@ function initCanvas(parent, name, w, h){
     //ctx.setStrokeStyle = function(style){ctx.strokeStyle = style;};
     //ctx.setLineWidth = function(style){ctx.lineWidth = style;};
 
+	if(Preloader){
+		ctx.drawPreloadedImage = function(name, x, y, w, h){
+			Preloader.drawImage(ctx, name, x, y, w, h);
+		}
+	}
     if(ImageBaker) {
         ctx.drawBakedImage = function (id, x, y) {
             ImageBaker.drawImage(ctx, id, x, y);
