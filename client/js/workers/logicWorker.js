@@ -217,6 +217,17 @@ function loop(){
                 speedRacer = 15;
             }, 2);
         }
+        if(gamepad.buttons.leftStick){
+            ship.projectiles = [];
+            for(var y=-20;y<20;y++){
+                for(var x=-20;x<20;x++){
+                    ship.projectiles.push({x:ship.pt.x+x*20,y:ship.pt.y+y*20,v:new Vector(0,0)});
+                }
+            }
+            setTimeout(function(){
+                ship.projectiles = [];
+            }, 200);
+        }
 
         var actualSpeed = left.distance*left.distance*speedRacer;
         ship.vel.w = Math.round(Math.cos(left.angle)*actualSpeed);
