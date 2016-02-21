@@ -74,6 +74,7 @@ function Player(x, y, name, color){
         dir: new Vector(0, 0),
         name: name,
         color: color,
+        projectiles: [],
         trash: 0
     };
 }
@@ -87,7 +88,6 @@ function handleCamera(){
     camera.y += dy*dy*dy/8e3;
 }
 var players = [Player(200, 100, 'the noob', 'rgb(0,240,250)')];
-var projectiles = [];
 var trash = [];// literally
 
 var launchProjectile = (function(){
@@ -102,7 +102,7 @@ var launchProjectile = (function(){
                 return;
             }
         }
-        cooldown = ts + 600;
+        cooldown = ts + 500;
         var d = Math.sqrt(ship.dir.w*ship.dir.w+ship.dir.h*ship.dir.h);
         var speed = 15;
         var p = {
@@ -112,12 +112,8 @@ var launchProjectile = (function(){
         };
         p.x+= p.v.w;
         p.y+= p.v.h;
-        projectiles.push(p);
-        updateStatus({
-            event: 'fireProjectile',
-            data: p
-        });
-        setTimeout(function(){projectiles.splice(projectiles.indexOf(p), 1);}, 2000);
+        ship.projectiles.push(p);
+        setTimeout(function(){ship.projectiles.splice(ship.projectiles.indexOf(p), 1);}, 2000);
     }
 })();
 
@@ -143,6 +139,11 @@ function loop(){
         ship.dir.w = Math.round(Math.cos(right.angle)*right.distance*20);
         ship.dir.h = Math.round(Math.sin(right.angle)*right.distance*20);
 
+        ship.projectiles.forEach(function(p){
+            p.x += p.v.w;
+            p.y += p.v.h;
+        });
+
         if(gamepad.buttons.a){
             joinRoom('hype');
         }
@@ -161,14 +162,8 @@ function loop(){
     }
     handleCamera();
 
-    // update projectiles
-    projectiles.forEach(function(p){
-        p.x += p.v.w;
-        p.y += p.v.h;
-    });
-
     // update player positions
-
+    // ehhhhh works without it kinda
 
     // check collisions
     var collisionRadius = 40;
@@ -188,7 +183,6 @@ function loop(){
         'ship': ship,
         'camera': camera,
         'players': players,
-        'projectiles': projectiles,
         'trash': trash
 	};
 
