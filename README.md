@@ -1,8 +1,9 @@
 # GabageCollection
 
+GarbageCollection is a soothing multiplayer game where the goal is to collect as much trash as possible. Fly your garbage truck through space while shooting other garbage men and women as you strive to collect 'em all.
+
 ##Contributors
-*Nick Wilson
-*Chris Helmick
+Nick Wilson and Chris Helmick
 
 ##Setup Instructions
 
@@ -10,17 +11,17 @@
 
 2. Clone the repository into a directory or download and extract it from GitHub.
 
-    git clone http://www.github.com/nawilson9/GarbageCollection
+    `git clone http://www.github.com/nawilson9/GarbageCollection`
     
 3. Install the dependencies
     
-    npm install
+    `npm install`
 
 4. Reconfigure the port in the GarbageCollection.js file if desired.
 
 5. CD into the 'server' directory and run the server
     
-    nodejs GarbageCollection.js
+    `nodejs GarbageCollection.js`
     
 5. Forward any ports necessary to connect to the server
  
