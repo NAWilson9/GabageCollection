@@ -34,7 +34,6 @@ self.onmessage = function(e) {
     height = e.data.height;
     socketInfo = e.data.socketInfo;
     boardSize = e.data.boardSize;
-    DebugSpawnTrash();
 
     self.onmessage = function (e) {
         var obj = messageDecode(e.data);
@@ -121,15 +120,6 @@ var launchProjectile = (function(){
     }
 })();
 
-function DebugSpawnTrash() {
-    var k = 100;
-    trash.push(new Point(
-        rand(boardSize / k, boardSize * (k - 1) / k),
-        rand(boardSize / k, boardSize * (k - 1) / k)
-    ));
-    setTimeout(DebugSpawnTrash, rand(5, 10) * 1000);
-}
-
 function getHit(){
     // TODO do something more here, signal server to drop trash here for other people
     ship.trash--;
@@ -183,8 +173,6 @@ function loop(){
 
         ship.dir.w = Math.round(Math.cos(right.angle)*right.distance*20);
         ship.dir.h = Math.round(Math.sin(right.angle)*right.distance*20);
-
-
     }
     handleCamera();
 
@@ -251,6 +239,11 @@ socket.on('userLeft', function(data){
             players.splice(i, 1);
         }
     }
+});
+
+socket.on('dumpingTrash', function(data){
+    trash.push(data);
+    //console.log('trashDump: ' + JSON.stringify(data));
 });
 
 socket.on('updateGlobalStatus', function(data){

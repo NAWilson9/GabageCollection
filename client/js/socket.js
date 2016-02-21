@@ -13,9 +13,11 @@ function updateStatus(data){
 function joinRoom(room){
     socket.emit('joinRoom', room, function(response){
         if(response.status === 'good'){
-            console.log('Successfully joined room "' + room + '". Previous users: ' + response.users);
             // TODO add more shtuff into this data block more than just name
             players.push(Player(50, 50, response.users, 'blue'));
+            trash = response.trash.slice();
+            console.log('Successfully joined room "' + room + '". Previous users: ' + response.users);
+
         } else {
             console.error('Error joining room. Reason: ' + response);
         }
@@ -38,6 +40,9 @@ function setUsername(data){
 function leaveRoom(){
     socket.emit('leaveRoom', function(response){
         if(response === 'good'){
+            trash = [];
+            ship.trash = 0;
+            players = [];
             console.log('Successfully left room.')
         } else{
             console.error('Error leaving room. Reason: ' + response);
