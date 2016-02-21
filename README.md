@@ -9,17 +9,17 @@ Nick Wilson and Chris Helmick
 
 2. Clone the repository into a directory or download and extract it from GitHub.
 
-    git clone http://www.github.com/nawilson9/GarbageCollection
+    `git clone http://www.github.com/nawilson9/GarbageCollection`
     
 3. Install the dependencies
     
-    npm install
+    `npm install`
 
 4. Reconfigure the port in the GarbageCollection.js file if desired.
 
 5. CD into the 'server' directory and run the server
     
-    nodejs GarbageCollection.js
+    `nodejs GarbageCollection.js`
     
 5. Forward any ports necessary to connect to the server
  
