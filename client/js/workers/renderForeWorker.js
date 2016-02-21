@@ -55,6 +55,38 @@ function renderProjectile(p, pkg){
 	pkg.add('fill');
 }
 
+function renderIndicator(ox, oy, dx, dy, pkg, r, g, b){
+	var a = Math.atan(dy/dx);
+	if(dx<0){
+		a+=Math.PI;
+	}
+
+	var baseR = Math.min(width, height)*2/5;
+	var dist = Math.sqrt(dx*dx+dy*dy);
+	if(dist < Math.min(width,height)/2){
+		return;
+	}
+	var distRt = Math.sqrt(dist);
+	var size = Math.min(5 + 1000/distRt, 100);
+	var da = Math.PI*size/800;
+	pkg.add('setFillStyle', 'rgba('+r+','+g+','+b+','+Math.floor((.2 +.8/Math.pow(distRt,.5))*100)/100+')');
+	pkg.add('beginPath');
+	pkg.add('moveTo',
+		Math.round(ox + baseR*Math.cos(a-da)),
+		Math.round(oy + baseR*Math.sin(a-da))
+	);
+	pkg.add('lineTo',
+		Math.round(ox + (baseR+size)*Math.cos(a)),
+		Math.round(oy + (baseR+size)*Math.sin(a))
+	);
+	pkg.add('lineTo',
+		Math.round(ox + baseR*Math.cos(a+da)),
+		Math.round(oy + baseR*Math.sin(a+da))
+	);
+	pkg.add('closePath');
+	pkg.add('fill');
+}
+
 function handleLogic(e){
 	var message = messageDecode(e.data);
 
@@ -93,38 +125,12 @@ function handleLogic(e){
 	message.trash.forEach(function(trash){
 		var dx = trash.x-message.ship.pt.x;
 		var dy = trash.y-message.ship.pt.y;
-
-		var a = Math.atan(dy/dx);
-		if(dx<0){
-			a+=Math.PI;
-		}
-
-		var baseR = Math.min(width, height)*2/5;
-		var dist = Math.sqrt(dx*dx+dy*dy);
-		if(dist < Math.min(width,height)/2){
-			return;
-		}
-		var distRt = Math.sqrt(dist);
-		var size = Math.min(5 + 1000/distRt, 100);
-		var da = Math.PI*size/500;
-		pkg.add('setFillStyle', 'rgba(250,0,0,'+Math.floor((.1 +.9/distRt)*100)/100+')');
-		pkg.add('beginPath');
-		//console.log(message.ship.pt.x ,message.ship.pt.y);
-		//console.log((message.ship.pt.x + baseR*Math.cos(a-da)),(message.ship.pt.y + baseR*Math.sin(a-da)));
-		pkg.add('moveTo',
-			Math.round(message.ship.pt.x + baseR*Math.cos(a-da)),
-			Math.round(message.ship.pt.y + baseR*Math.sin(a-da))
-		);
-		pkg.add('lineTo',
-			Math.round(message.ship.pt.x + (baseR+size)*Math.cos(a)),
-			Math.round(message.ship.pt.y + (baseR+size)*Math.sin(a))
-		);
-		pkg.add('lineTo',
-			Math.round(message.ship.pt.x + baseR*Math.cos(a+da)),
-			Math.round(message.ship.pt.y + baseR*Math.sin(a+da))
-		);
-		pkg.add('closePath');
-		pkg.add('fill');
+		renderIndicator(message.ship.pt.x, message.ship.pt.y, dx, dy, pkg, 250, 0, 0);
+	});
+	message.players.forEach(function(pl){
+		var dx = pl.pt.x-message.ship.pt.x;
+		var dy = pl.pt.y-message.ship.pt.y;
+		renderIndicator(message.ship.pt.x, message.ship.pt.y, dx, dy, pkg, 100, 100, 255);
 	});
 
 

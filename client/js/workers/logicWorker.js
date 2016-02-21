@@ -110,8 +110,8 @@ var launchProjectile = (function(){
             y:ship.pt.y,
             v: new Vector(ship.dir.w/d*speed, ship.dir.h/d*speed)
         };
-        p.x+= p.v.w;
-        p.y+= p.v.h;
+        //p.x+= p.v.w;// not necessary anymore since projectiles are tied to their owner
+        //p.y+= p.v.h;
         ship.projectiles.push(p);
         setTimeout(function(){ship.projectiles.splice(ship.projectiles.indexOf(p), 1);}, 2000);
     }
@@ -124,6 +124,11 @@ function DebugSpawnTrash() {
         rand(boardSize / k, boardSize * (k - 1) / k)
     ));
     setTimeout(DebugSpawnTrash, rand(5, 10) * 1000);
+}
+
+function getHit(){
+    // TODO do something more here, signal server to drop trash here for other people
+    ship.trash--;
 }
 
 function loop(){
@@ -178,6 +183,16 @@ function loop(){
             ship.trash++;
         }
     }
+    players.forEach(function(pl){
+        pl.projectiles.forEach(function(p){
+            var dx = p.x - ship.pt.x;
+            var dy = p.y - ship.pt.y;
+            var dist = Math.sqrt(dx*dx+dy*dy);
+            if(dist < collisionRadius){
+                getHit();
+            }
+        });
+    });
 
 	var message = {
         'ship': ship,

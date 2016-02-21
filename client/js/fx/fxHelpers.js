@@ -1,14 +1,35 @@
 // http://updates.html5rocks.com/2012/06/How-to-convert-ArrayBuffer-to-and-from-String
 function ab2str(buf) {
-    return String.fromCharCode.apply(null, new Uint16Array(buf));
+    var bufView = new Uint16Array(buf);
+    //const k = 65535,
+    const k = 4096,
+        len = bufView.length,
+        lenMinK = len-k;
+
+    //len = buf.prototype.length;
+
+    var str = "",
+        i = 0;
+
+    for(;i < lenMinK; i+=k){
+        str += String.fromCharCode.apply(
+            null,
+            bufView.subarray(i, i+k)
+        );
+    }
+    str += String.fromCharCode.apply(
+        null,
+        bufView.subarray(i, len)
+    );
+    return str;
 }
 function str2ab(str) {
-	var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
-	var bufView = new Uint16Array(buf);
-	for (var i=0, strLen=str.length; i < strLen; i++) {
-		bufView[i] = str.charCodeAt(i);
-	}
-	return buf;
+    var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
+    var bufView = new Uint16Array(buf);
+    for (var i=0, strLen=str.length; i < strLen; i++) {
+        bufView[i] = str.charCodeAt(i);
+    }
+    return buf;
 }
 // end
 

@@ -70,8 +70,6 @@ function ab2str(buf) {
         bufView.subarray(i, len)
     );
     return str;
-
-    //return String.fromCharCode.apply(null, new Uint16Array(buf));
 }
 function str2ab(str) {
 	var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
