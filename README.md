@@ -1,5 +1,7 @@
 # GabageCollection
 
+GarbageCollection is a soothing multiplayer game where the goal is to collect as much trash as possible. Fly your garbage truck through space while shooting other garbage men and wome as you strive to collect 'em all.
+
 ##Contributors
 Nick Wilson and Chris Helmick
 
