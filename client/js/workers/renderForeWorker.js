@@ -13,6 +13,20 @@ function initValues(e){
 }
 
 function renderShip(s, pkg){
+
+	// particles
+
+	for(var i= 0, len = 10*Math.sqrt(s.vel.w* s.vel.w+ s.vel.h* s.vel.h);i<len;i++){
+		console.log(len);
+		var size = rand(10, 100)/(i/4+3);
+		pkg.add('setFillStyle','rgba(50, 50, 50, '+(0.1+0.2/size)+')');
+		pkg.add('beginPath');
+		var noise = i/2+2,
+			trailFactor = 1+Math.sqrt(i);
+		pkg.add('arc', s.pt.x - s.vel.w*trailFactor + rand(-noise, noise), s.pt.y- s.vel.h*trailFactor + rand(-noise, noise), size, 0, Math.PI*2, 1);
+		pkg.add('fill')
+	}
+
 	pkg.add('setFillStyle', s.color);
 	var k = 20;
 	pkg.add('beginPath');

@@ -79,6 +79,7 @@ function Player(x, y, name, color){
             current: 100,
             max: 100
         },
+        vel: new Vector(0, 0),
         trash: 0
     };
 }
@@ -91,7 +92,7 @@ function handleCamera(){
     camera.x += dx*dx*dx/8e3;
     camera.y += dy*dy*dy/8e3;
 }
-var players = [Player(200, 100, 'the noob', 'rgb(0,240,250)')];
+var players = [];//Player(200, 100, 'the noob', 'rgb(0,240,250)')];
 var trash = [];// literally
 
 var launchProjectile = (function(){
@@ -110,8 +111,8 @@ var launchProjectile = (function(){
         var d = Math.sqrt(ship.dir.w*ship.dir.w+ship.dir.h*ship.dir.h);
         var speed = 15;
         var p = {
-            x:ship.pt.x,
-            y:ship.pt.y,
+            x: ship.pt.x,
+            y: ship.pt.y,
             v: new Vector(ship.dir.w/d*speed, ship.dir.h/d*speed)
         };
         //p.x+= p.v.w;// not necessary anymore since projectiles are tied to their owner
@@ -178,12 +179,14 @@ function loop(){
             }, 2);
         }
 
-        ship.pt.x += Math.round(Math.cos(left.angle)*left.distance*left.distance*speedRacer);
-        ship.pt.y += Math.round(Math.sin(left.angle)*left.distance*left.distance*speedRacer);
+        var actualSpeed = left.distance*left.distance*speedRacer;
+        ship.vel.w = Math.round(Math.cos(left.angle)*actualSpeed);
+        ship.vel.h = Math.round(Math.sin(left.angle)*actualSpeed);
+        ship.pt.x += ship.vel.w;
+        ship.pt.y += ship.vel.h;
 
         ship.dir.w = Math.round(Math.cos(right.angle)*right.distance*20);
         ship.dir.h = Math.round(Math.sin(right.angle)*right.distance*20);
-
 
     }
     handleCamera();
