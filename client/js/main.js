@@ -55,7 +55,7 @@ var imagePreloadMap = {
 };
 
 
-var boardSize = 1500;
+var boardSize = 2000;
 function bakeRendering(one, loadingCallback){
     const i = one;
     var def = 3;
@@ -288,7 +288,10 @@ var keyMapHandler = (function(){
             case "toggleDevMode":
                 toggleDevMode();
                 break;
-            //case "tforward":
+            case "up":
+                msg.push({
+                    'cmd': 'up'
+                })
             //    mem.rev = 1;
             //case "tbackward":
             //    mem.rev = mem.rev ? mem.rev : 0;
