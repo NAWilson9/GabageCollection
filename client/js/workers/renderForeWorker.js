@@ -17,7 +17,6 @@ function renderShip(s, pkg){
 	// particles
 
 	for(var i= 0, len = 10*Math.sqrt(s.vel.w* s.vel.w+ s.vel.h* s.vel.h);i<len;i++){
-		console.log(len);
 		var size = rand(10, 100)/(i/4+3);
 		pkg.add('setFillStyle','rgba(50, 50, 50, '+(0.1+0.2/size)+')');
 		pkg.add('beginPath');
