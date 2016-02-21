@@ -332,7 +332,26 @@ function rnGeezeus(){
         'Actually 10 years old',
         'Not 10 years old',
         'GG',
-        'PCMR'
+        'PCMR',
+        'Bic Boi',
+        'Biccer Boi',
+        'Biccest Boi',
+        'Rickles',
+        'Christles',
+        'Nickles',
+        'Kale',
+        'Spud',
+        'Doot Gloop',
+        'Scooty Doots',
+        'Denko',
+        'Lil D-Wayne',
+        'Alpha',
+        'Beta',
+        'Playa',
+        'WHAT IT ISSSSS',
+        'KnG',
+        "JJ's",
+        'Traesh'
     ];
     return list[Math.floor(Math.random() * list.length)];
 }
