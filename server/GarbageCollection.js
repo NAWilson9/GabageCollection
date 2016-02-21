@@ -102,6 +102,18 @@ io.on('connection', function (socket) {
     //Receive client status data and send to all other clients
     socket.on('updateClientStatus', function(data){
         socket.to(socket.currentRoom).emit('updateGlobalStatus', data);
+        if(data.event === 'garbageDay'){
+            console.log('gg');
+            for(var i = 0; i < io.sockets.adapter.rooms[socket.currentRoom].trash.length; i++){
+                if(io.sockets.adapter.rooms[socket.currentRoom].trash[i].id === data.id){
+                    io.sockets.adapter.rooms[socket.currentRoom].trash.splice(i, 1);
+                }
+            }
+            var newTrash = trashThePlace();
+            io.sockets.adapter.rooms[socket.currentRoom].trash.push(newTrash);
+            io.sockets.to(socket.currentRoom).emit('dumpingTrash', newTrash);
+        }
+
     });
 
     //A user has requested to set their username
