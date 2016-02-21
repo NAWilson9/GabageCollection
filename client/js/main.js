@@ -128,14 +128,24 @@ function init(){
     });
 
     IO.bind("TILDE", "toggleDevMode", 500);
-    //IO.bind("Q","tbackward");
-    //IO.bind("W","tforward");
+
+    IO.bind("W","up");
+    IO.bind("UP_ARROW","up");
+    IO.bind("A","left");
+    IO.bind("LEFT_ARROW","left");
+    IO.bind("D","right");
+    IO.bind("RIGHT_ARROW","right");
+    IO.bind("S","down");
+    IO.bind("DOWN_ARROW","down");
+
+    IO.bind("B","speed");
+    IO.bind(" ","shoot");
+
     IO.handleMouse(function(coords){
         var data = {
             'type': 'mouse',
             'data': coords
         };
-        logger.log("Mouse", coords);
         sendLogicWorkerMessage(data);
     });
 
@@ -288,17 +298,16 @@ var keyMapHandler = (function(){
             case "toggleDevMode":
                 toggleDevMode();
                 break;
-            //case "tforward":
-            //    mem.rev = 1;
-            //case "tbackward":
-            //    mem.rev = mem.rev ? mem.rev : 0;
-            //    var factor = (mem.rev * 3 - 1);
-            //    msg.push({
-            //        'cmd': 'time',
-            //        'factor': factor
-            //    });
-            //    logger.log(factor);
-            //    break;
+            case "up":
+            case "down":
+            case "left":
+            case "right":
+            case "shoot":
+            case "speed":
+                msg.push({
+                    'cmd': ioCmd
+                });
+                break;
         }
         return mem;
     };

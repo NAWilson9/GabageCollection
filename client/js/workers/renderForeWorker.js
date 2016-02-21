@@ -116,6 +116,14 @@ function renderBar(x,y,w,h,max,cur,c1,c2,pkg){
 	pkg.add('stroke');
 }
 
+function renderTrash(trash, pkg){
+	var r = 10;
+	pkg.add('setFillStyle', 'rgb(180,180,200)');
+	pkg.add('beginPath');
+	pkg.add('rect', trash.x-r, trash.y-r, r*2, r*2);
+	pkg.add('fill');
+}
+
 function handleLogic(e){
 	var message = messageDecode(e.data);
 
@@ -124,12 +132,8 @@ function handleLogic(e){
 	pkg.add('translate', -message.camera.x+width/2, -message.camera.y+height/2);
 
 	// actual trash
-	pkg.add('setFillStyle', 'red');
-	message.trash.forEach(function(trash){
-		var r = 10;
-		pkg.add('beginPath');
-		pkg.add('rect', trash.x-r, trash.y-r, r*2, r*2);
-		pkg.add('fill');
+	message.trash.forEach(function(t){
+		renderTrash(t, pkg);
 	});
 
 	// other player stuff

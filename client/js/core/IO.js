@@ -6,7 +6,11 @@ var specialKeyCodes=[
 	{key:17,name:"CTRL"},
 	{key:18,name:"ALT"},
 	{key:20,name:"CAPS LOCK"},
-	{key:192,name:"TILDE"}
+	{key:192,name:"TILDE"},
+	{key:39,name:"RIGHT_ARROW"},
+	{key:37,name:"LEFT_ARROW"},
+	{key:38,name:"UP_ARROW"},
+	{key:40,name:"DOWN_ARROW"}
 
 ];
 function keyEvent(e,bool){
