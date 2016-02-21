@@ -126,6 +126,19 @@ function getHit(){
     ship.trash--;
 }
 
+function pickupTrash(t){
+    trash.forEach(function(tr){
+        if(tr.id == t.id){
+            trash.remove(tr);
+            updateStatus({
+                event: 'GarbageDay',
+                id: tr.id
+            });
+        }
+    });
+    ship.trash++;
+}
+
 function energyAction(action, cost){
     if(ship.energy.current > cost){
         action();
@@ -192,9 +205,7 @@ function loop(){
         var dy = t.y - ship.pt.y;
         var dist = Math.sqrt(dx*dx+dy*dy);
         if(dist < collisionRadius){
-            trash.splice(i,1);
-            i--;
-            ship.trash++;
+            pickupTrash(t);
         }
     }
     players.forEach(function(pl){
@@ -222,7 +233,7 @@ function loop(){
 
 	self.postMessage(messageEncode(message));
 
-	setTimeout(loop,15);// 60 fps - prod deploy
+	setTimeout(loop, 15);// 60 fps - prod deploy
 	//setTimeout(loop,33);// 30 fps - test deploy
 	//setTimeout(loop,50);// 20 fps - debug deploy
 }
@@ -248,7 +259,6 @@ socket.on('userLeft', function(data){
 
 socket.on('dumpingTrash', function(data){
     trash.push(data);
-    //console.log('trashDump: ' + JSON.stringify(data));
 });
 
 socket.on('updateGlobalStatus', function(data){
@@ -262,6 +272,13 @@ socket.on('updateGlobalStatus', function(data){
             players.forEach(function(p){
                 if(p.name == data.data.name){
                     players.splice(players.indexOf(p), 1, data.data);
+                }
+            });
+            break;
+        case 'garbageDay':
+            trash.forEach(function(t){
+                if(t.id == data.id){
+                    trash.remove(t);
                 }
             });
             break;

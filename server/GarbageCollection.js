@@ -94,6 +94,17 @@ var rand = function(min,max){
     if(max<min){var temp=max;max=min;min=temp;}
     return Math.floor(Math.random()*(max-min)+min);
 };
+var TrashCan = (function(){
+    var id = 0;
+    return function(x, y) {
+        id++;
+        return {
+            x: x,
+            y: y,
+            id: id
+        };
+    }
+})();
 var boardSize = 5e3;
 var k = 100;
 var trashThePlace = function(){
@@ -102,12 +113,12 @@ var trashThePlace = function(){
         if(rooms.hasOwnProperty(guid)){
             var room = rooms[guid];
             if(room.hasOwnProperty('trash')){
-                var point = new Point(
+                var t = TrashCan(
                     rand(boardSize / k, boardSize * (k - 1) / k),
                     rand(boardSize / k, boardSize * (k - 1) / k)
                 );
-                room.trash.push(point);
-                io.sockets.to(guid).emit('dumpingTrash', point);
+                room.trash.push(t);
+                io.sockets.to(guid).emit('dumpingTrash', t);
             }
         }
     }
