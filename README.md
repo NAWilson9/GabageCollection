@@ -1,8 +1,7 @@
 # GabageCollection
 
 ##Contributors
-Nick Wilson
-Chris Helmick
+Nick Wilson and Chris Helmick
 
 ##Setup Instructions
 
