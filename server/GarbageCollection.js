@@ -91,7 +91,7 @@ io.on('connection', function (socket) {
             var oldName = socket.username;
             socket.username = newName;
             callback('good');
-            console.log(new Date().toLocaleTimeString() + ' | A user in room "' + socket.currentRoom + '" has changed their name from "' + oldName + '" to "' + socket.username + '".');
+            console.log(new Date().toLocaleTimeString() + ' | A user has changed their name from "' + oldName + '" to "' + socket.username + '".');
         }
     });
 
