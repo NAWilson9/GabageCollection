@@ -24,11 +24,13 @@ function renderShip(s, pkg){
 	pkg.add('rect', s.pt.x+s.dir.w-k/2, s.pt.y+s.dir.h-k/2, k, k);
 	pkg.add('fill');
 
+	renderBar(s.pt.x-25, s.pt.y-20, 50, 5, s.energy.max, s.energy.current, 'rgba(0,0,0,0.2)', 'green', pkg);
+
 	pkg.add('setFillStyle', 'white');
 	pkg.add('setFont', '15px Courier New');
 	pkg.add('setTextAlign', 'center');
 	pkg.add('beginPath');
-	pkg.add('fillText', s.name, s.pt.x, s.pt.y-20);
+	pkg.add('fillText', s.name, s.pt.x, s.pt.y-22);
 }
 
 function renderProjectile(p, pkg){
@@ -87,6 +89,20 @@ function renderIndicator(ox, oy, dx, dy, pkg, r, g, b){
 	pkg.add('fill');
 }
 
+function renderBar(x,y,w,h,max,cur,c1,c2,pkg){
+	pkg.add('setStrokeStyle', 'white');
+	pkg.add('setFillStyle', c1);
+	pkg.add('beginPath');
+	pkg.add('rect', x, y, w, h);
+	pkg.add('fill');
+	pkg.add('stroke');
+	pkg.add('setFillStyle', c2);
+	pkg.add('beginPath');
+	pkg.add('rect', x, y, Math.floor(w*cur/max), h);
+	pkg.add('fill');
+	pkg.add('stroke');
+}
+
 function handleLogic(e){
 	var message = messageDecode(e.data);
 
@@ -132,7 +148,6 @@ function handleLogic(e){
 		var dy = pl.pt.y-message.ship.pt.y;
 		renderIndicator(message.ship.pt.x, message.ship.pt.y, dx, dy, pkg, 100, 100, 255);
 	});
-
 
 
 	pkg.add('translate', message.camera.x-width/2, message.camera.y-height/2);

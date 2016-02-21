@@ -75,6 +75,10 @@ function Player(x, y, name, color){
         name: name,
         color: color,
         projectiles: [],
+        energy: {
+            current: 100,
+            max: 100
+        },
         trash: 0
     };
 }
@@ -131,6 +135,13 @@ function getHit(){
     ship.trash--;
 }
 
+function energyAction(action, cost){
+    if(ship.energy.current > cost){
+        action();
+        ship.energy.current -= cost;
+    }
+}
+
 function loop(){
 	metrics.markTimer(TIMER);
 	var deltaT = metrics.getDeltaTime(TIMER)/1000;
@@ -138,16 +149,12 @@ function loop(){
     if(gamepad){
         const left = gamepad.leftStick,
             right = gamepad.rightStick;
-        ship.pt.x += Math.round(Math.cos(left.angle)*left.distance*left.distance*10);
-        ship.pt.y += Math.round(Math.sin(left.angle)*left.distance*left.distance*10);
-
-        ship.dir.w = Math.round(Math.cos(right.angle)*right.distance*20);
-        ship.dir.h = Math.round(Math.sin(right.angle)*right.distance*20);
 
         ship.projectiles.forEach(function(p){
             p.x += p.v.w;
             p.y += p.v.h;
         });
+        ship.energy.current = Math.min(ship.energy.current+deltaT*70, ship.energy.max);
 
         if(gamepad.buttons.a){
             joinRoom('hype');
@@ -164,6 +171,20 @@ function loop(){
         if(gamepad.buttons.rightTrigger){
             launchProjectile();
         }
+        var speedRacer = 5;
+        if(gamepad.buttons.leftTrigger){
+            energyAction(function(){
+                speedRacer = 15;
+            }, 2);
+        }
+
+        ship.pt.x += Math.round(Math.cos(left.angle)*left.distance*left.distance*speedRacer);
+        ship.pt.y += Math.round(Math.sin(left.angle)*left.distance*left.distance*speedRacer);
+
+        ship.dir.w = Math.round(Math.cos(right.angle)*right.distance*20);
+        ship.dir.h = Math.round(Math.sin(right.angle)*right.distance*20);
+
+
     }
     handleCamera();
 
