@@ -351,7 +351,9 @@ function rnGeezeus(){
         'WHAT IT ISSSSS',
         'KnG',
         "JJ's",
-        'Traesh'
+        'Traesh',
+        'Tru Playa',
+        'Sweg'
     ];
     return list[Math.floor(Math.random() * list.length)];
 }
